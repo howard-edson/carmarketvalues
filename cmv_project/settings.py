@@ -64,8 +64,8 @@ DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.postgresql_psycopg2',
         'NAME': 'cmv',
-        'USER': 'howard',
-        'PASSWORD': 'howard',
+        'USER': 'cmv_user',
+        'PASSWORD': 'cmv_pass',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }

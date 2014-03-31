@@ -45,7 +45,8 @@ class Search(models.Model):
     )
     
     user = models.ForeignKey(User)
-    region = models.ManyToManyField(Region, related_name='s_r+')  # one search runs in many regions
+    created = models.DateField(auto_now=True)
+    regions = models.ManyToManyField(Region, related_name='s_r+')  # one search runs in many regions
     vehicle_make = models.CharField(max_length=100, blank=True)
     vehicle_model = models.CharField(max_length=100, blank=True)
     extra_keywords = models.CharField(max_length=100, blank=True)
