@@ -3,18 +3,6 @@ from django.contrib.auth.models import User
 
 # Note: Users will be stored in django's automatically-created users table
 
-class Website(models.Model):
-    """
-    A website we search for postings. The domain is used in constructing 
-    the search url. In v1.0 our only record in this table is 'craigslist.org'
-    
-    """
-    domain = models.CharField(max_length=100, unique=True, 
-        help_text="the part of the website used in constructing urls")
-
-    def __unicode__(self):
-        return self.domain
-
 
 class Region(models.Model):
     """
@@ -73,12 +61,11 @@ class Posting(models.Model):
     relationship implemented here.
     
     """
-    website = models.ForeignKey(Website)
     region = models.ForeignKey(Region)
     # A posting may be associated with more than one search
     search = models.ManyToManyField(Search, related_name='p_s+')
-    # prevents duplicate postings
-    website_posting_id = models.CharField(max_length=100, unique=True)
+    # unique constraint here prevents duplicate postings
+    posting_url = models.URLField(unique=True)
     last_updated = models.DateField(auto_now=True)
     vehicle_year = models.PositiveIntegerField(null=True, blank=True)
     vehicle_price = models.PositiveIntegerField(null=True, blank=True)
