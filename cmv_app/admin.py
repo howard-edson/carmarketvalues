@@ -1,5 +1,6 @@
 from django.contrib import admin
 from cmv_app.models import Region, Search, Posting
+#this is brand new
 
 class SearchAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'created', 'vehicle_make', 'vehicle_model',
