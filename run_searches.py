@@ -122,8 +122,10 @@ if __name__ == "__main__":
                 if not ('wanted' in e.title or 'wtb' in e.title):
                     # update or insert a new posting in the database
                     try:
+                        # fetch existing posting if it exists
                         posting = Posting.objects.get(posting_url=e.posting_url)
                     except Posting.DoesNotExist:
+                        # create new posting if it does not already exist
                         posting = Posting(region=region,
                                       posting_url=e.posting_url,
                                       vehicle_year=e.vehicle_year,

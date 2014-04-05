@@ -12,12 +12,28 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# this code is necessary to keep secrets out of github.com, and so that
+# each developer can use his own.
+import json
+from django.core.exceptions import ImproperlyConfigured
+
+with open("secrets.json") as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    """Get the secret variable or return explicit exception."""
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {0} environment variable.".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+z0e@uw7pm#5z)re78i^$j%8h)0r3nx13v@2x676@_@8i3)fo$'
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +53,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cmv_app',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -63,11 +80,11 @@ DATABASES = {
 #     }
     'default': {
         'ENGINE':'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cmv',
-        'USER': 'cmv_user',
-        'PASSWORD': 'cmv_pass',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': get_secret("NAME"),
+        'USER': get_secret("USER"),
+        'PASSWORD': get_secret("PASSWORD"),
+        'HOST': get_secret("HOST"),
+        'PORT': get_secret("PORT"),
     }
 }
 

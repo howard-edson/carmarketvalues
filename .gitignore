@@ -3,3 +3,5 @@ notes.txt
 .project
 .pydevproject
 .settings*
+secrets.json
+commit_message.txt
