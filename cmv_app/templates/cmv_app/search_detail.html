@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if object.user == user %}
+  <h2>Search results for {{ object }}</h2>
+  
+  <div class="postings">
+      <b>query results from postings will come here</b>
+  </div>
+  
+  <a href="{% url 'search_update' pk=object.pk %}">Edit</a> | 
+  <a href="{% url 'search_delete' pk=object.pk %}">Delete</a>
+{% else %}
+  <p>Please <a href="{% url 'login' %}">log in </p>
+{% endif %}
+{% endblock %}
