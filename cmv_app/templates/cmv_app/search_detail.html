@@ -1,0 +1,27 @@
+{% extends "cmv_app/base.html" %}
+{% load humanize %}  {% comment %} for formatting prices with a comma separator {% endcomment %} 
+
+{% block title %}Car Market Values: Home{% endblock %}
+
+{% block content %}
+<h1>Search {{ search.id }}: {{ search }}</h1>
+<ul>
+	<li>user: {{ search.user }} </li>
+	<li>created: {{ search.created }} </li>
+	<li>regions: {{ search.regions.all|join:", " }} </li>
+	<li>vehicle_make: {{ search.vehicle_make }} </li>
+	<li>vehicle_model: {{ search.vehicle_model }} </li>
+	<li>extra_keywords: {{ search.extra_keywords }} </li>
+	<li>max_price: {{ search.max_price|intcomma }} </li>
+	<li>min_price: {{ search.min_price|intcomma }} </li>
+	<li>max_year: {{ search.max_year }} </li>
+	<li>min_year: {{ search.min_year }} </li>
+	<li>pic_only: {{ search.pic_only }} </li>
+	<li>search_title_only: {{ search.search_title_only }} </li>
+	<li>seller_type: {{ search.seller_type }} </li>
+</ul>
+
+<a href="{% url 'cmv_app:search_report' search.id %}">show report for this search</a>  (postings for now).
+
+
+{% endblock %}

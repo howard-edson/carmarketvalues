@@ -1,0 +1,19 @@
+{% extends "cmv_app/base.html" %}
+
+{% block title %}Car Market Values: Home{% endblock %}
+
+{% block content %}
+<h1>My Searches</h1>
+
+{% if search_list %}
+    <ul>
+        {% for search in search_list %}
+        <li><a href="{% url 'cmv_app:search_detail' search.id %}">{{ search }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No Searches are available.</p>
+{% endif %}
+
+
+{% endblock %}
