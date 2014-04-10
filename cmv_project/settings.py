@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# this code is necessary to keep secrets out of github.com, and so that
-# each developer can use his own.
 import json
 from django.core.exceptions import ImproperlyConfigured
 
@@ -54,6 +52,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'cmv_app',
     'south',
+    'crispy_forms',
+    'bootstrap3',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -68,6 +68,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'cmv_project.urls'
 
 WSGI_APPLICATION = 'cmv_project.wsgi.application'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 # Database
@@ -87,6 +89,20 @@ DATABASES = {
         'PORT': get_secret("PORT"),
     }
 }
+
+from django.core.urlresolvers import reverse_lazy
+
+LOGIN_URL=reverse_lazy("login")
+LOGIN_REDIRECT_URL=reverse_lazy("home")
+LOGOUT_URL=reverse_lazy("logout")
+
+TEMPLATE_LOADERS = (
+   'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+#     'django.template.loaders.eggs.Loader',
+)
+
+TEMPLATE_DIRS=(os.path.join(BASE_DIR, 'templates'),)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
