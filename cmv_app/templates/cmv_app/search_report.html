@@ -1,19 +1,39 @@
-{% extends "cmv_app/base.html" %}
-
-{% block title %}Car Market Values: Home{% endblock %}
+{% extends "base.html" %}
+{% load humanize %}  {% comment %} for formatting prices with a comma separator {% endcomment %}
 
 {% block content %}
-<h1>Report for Search {{ search_id }}</h1>
 
-{% if posting_list %}
-    <ul>
-        {% for posting in posting_list %}
-        <li>{{ posting }}</a></li>
-        {% endfor %}
-    </ul>
+<h2>Search report for {{ search }}</h2>
+
+{% if postings_count %}
+
+Postings saved: {{ postings_count }}
+
+<ul>
+	{% for r in x %}
+	    <li>
+	      <strong>{{ r.region__name }}</strong>
+	      <ul>
+	          <li>postings: {{ r.tcount }}</li>
+	          <li>average price: ${{ r.price|floatformat:"0" }}</li>
+	          <li>average year: {{ r.year|floatformat:"0" }}</li>
+	      </ul>
+	    </li>
+	{% endfor %}
+</ul>
+
+{% comment %}
+<ul>
+	<li></li>
+	<li>Average price: ${{ average_price|intcomma }}</li>
+	<li>Average year: {{ average_year }}</li>
+</ul>
+{% endcomment %}
+
 {% else %}
-    <p>No Postings are available.</p>
+    <p>No Postings in the database for this search.</p>
 {% endif %}
 
+<hr />
 
-{% endblock %}
+{% endblock content %}
