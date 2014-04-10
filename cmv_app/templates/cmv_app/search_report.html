@@ -1,0 +1,19 @@
+{% extends "cmv_app/base.html" %}
+
+{% block title %}Car Market Values: Home{% endblock %}
+
+{% block content %}
+<h1>Report for Search {{ search_id }}</h1>
+
+{% if posting_list %}
+    <ul>
+        {% for posting in posting_list %}
+        <li>{{ posting }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No Postings are available.</p>
+{% endif %}
+
+
+{% endblock %}
