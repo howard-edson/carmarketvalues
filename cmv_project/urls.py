@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^cmv/', include('cmv_app.urls', namespace='cmv_app')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     #url(r'^accounts/', include('accounts.urls')),
     url(r'^$', RedirectView.as_view(url=reverse_lazy('home'))),

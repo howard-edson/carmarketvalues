@@ -7,6 +7,7 @@ django-crispy-forms==1.4.0
 feedparser==5.1.3
 psycopg2==2.5.2
 wsgiref==0.1.2
+docutils==0.11
 
 pull into your local branch; currently registration does not work
 it will be implemented in next section
