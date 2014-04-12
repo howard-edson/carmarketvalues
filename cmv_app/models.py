@@ -74,3 +74,6 @@ class Posting(models.Model):
 
     def __unicode__(self):
         return "{0} ({1})".format(self.title, self.last_updated)
+
+    class Meta:
+        select_on_save = True
