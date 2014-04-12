@@ -17,8 +17,13 @@ import re
 import datetime
 import HTMLParser
 
-pars = HTMLParser.HTMLParser()
+import logging
+logging.basicConfig(filename='run_searches.log',
+                    format='%(asctime)s %(message)s',
+                    filemode='w',  # overwrite log file each run 
+                    level=logging.INFO)
 
+pars = HTMLParser.HTMLParser()
 
 # Establish upper and lower limits for a "reasonable" year
 MIN_REASONABLE_VEHICLE_YEAR = 1940
@@ -32,7 +37,7 @@ p_year = re.compile(  # matches any year between 1900-2999
     (19[456789]\d   # 1940-1999
      |              # ...or...
      20\d{2})       # 2000-2099
-    (?!\d)          # year can't be followed immediatley by a digit
+    (?!\d)          # year can't be followed immediately by a digit
     """,
     re.UNICODE | re.VERBOSE)
 
@@ -110,22 +115,46 @@ class Entry(object):
 
 if __name__ == "__main__":
 
+    logging.info('Begin Processing')
     # process all searches from the database
     searches = Search.objects.all()
+    logging.info('Retrieved %s searches' % len(searches))
     for search in searches:
+        logging.info('Search: %s' % search)
         for region in search.regions.all():
             search_url = make_url(search, region)
+            if search_url:
+                logging.info('URL: %s' % search_url)
+            else:
+                logging.info('failed to build search_url')
             postings = []  # a list of postings retrieved for this search_url
             doc = feedparser.parse(search_url)
+            if doc:
+                logging.info('Document retrieved from craigslist with %s entries' % len(doc['entries']))
+            else:
+                logging.info('No document retrieved from craigslist')
             for entry in doc.entries:
                 e = Entry(entry)
                 if not ('wanted' in e.title or 'wtb' in e.title):
-                    # update or insert a new posting in the database
-                    posting, created = Posting.objects.get_or_create(
-                                          region=region,
+                    try:
+                        # see if posting exists already, and if so, update it
+                        posting = Posting.objects.get(posting_url=e.posting_url)
+                        posting.vehicle_year=e.vehicle_year
+                        posting.vehicle_price=e.vehicle_price
+                        posting.title=e.title
+                        posting.body=e.body
+                        posting.save()
+                        logging.info('Posting found and updated')
+                    except Posting.DoesNotExist:
+                        posting = Posting(region=region,
                                           posting_url=e.posting_url,
                                           vehicle_year=e.vehicle_year,
                                           vehicle_price=e.vehicle_price,
                                           title=e.title,
                                           body=e.body)
-                    posting.search.add(search)                    
+                        posting.save()
+                        logging.info('New posting created')
+                    finally:
+                        posting.search.add(search)
+                    if not posting:
+                        logging.warning('Error: Posting not created')
