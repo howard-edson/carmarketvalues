@@ -67,6 +67,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS =(
+'django.contrib.auth.context_processors.auth',
+'django.contrib.messages.context_processors.messages',)
+
 ROOT_URLCONF = 'cmv_project.urls'
 
 WSGI_APPLICATION = 'cmv_project.wsgi.application'
@@ -94,7 +98,7 @@ DATABASES = {
 
 from django.core.urlresolvers import reverse_lazy
 
-LOGIN_URL=reverse_lazy("login")
+LOGIN_URL=reverse_lazy("home")
 LOGIN_REDIRECT_URL=reverse_lazy("home")
 LOGOUT_URL=reverse_lazy("logout")
 
@@ -105,6 +109,7 @@ TEMPLATE_LOADERS = (
 )
 
 TEMPLATE_DIRS=(os.path.join(BASE_DIR, 'templates'),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -124,3 +129,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}

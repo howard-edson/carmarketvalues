@@ -1,33 +1,64 @@
 {% extends "base.html" %}
-
+{% load bootstrap3 %}
+{% load static from staticfiles %}
+{% block title %}CMV{% endblock %}
+{% block customcss %}
+<style>
+                body {margin-top: 100px;}
+            </style>
+<link href="{% static "css/jquery.dataTables.css" %}" rel="stylesheet">
+<link href="{% static "css/TableTools.css" %}" rel="stylesheet">
+<script type="text/javascript">
+$(document).ready(function() {
+var oTable = $('#search_table').dataTable( {
+        "sDom": 'T<"clear">lrtip',
+        "oTableTools": {
+            "sSwfPath": "{% static 'extras/copy_csv_xls_pdf.swf' %}",
+		    "aButtons": [ "csv", "pdf", "print" ]
+        },
+        "bProcessing": true,
+        //"bServerSide": true,
+        //"sAjaxDataProp": "aaData",
+        //"sServerMethod": "POST",
+        //"sAjaxSource": "{% static 'js/simple.json' %}",
+        "sAjaxSource": "{% url 'search_list_json' %}",
+        "aaSorting": [ [1,'desc'], [2,'desc'] ],
+        // Disable sorting for the Actions column.
+        //"aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,4 ] } ],
+        //'aLengthMenu':[[35,'-1'],['Paged','All']],
+        //"iDisplayLength":35,
+        "sPaginationType": "full_numbers"
+    } );
+} );
+</script>  
+<script src="{% static 'js/TableTools.min.js' %}"></script>
+{% endblock %}
 {% block content %}
-
-{% if not user.is_authenticated %}
-    <div> 
-    <a href="{% url 'login' %}">Login or</a>
-    <a href="{% url 'registration_register' %}">Register</a>
-    to create your searches 
-    </div>
-{% else %}
-{% if is_paginated %}
-<ol start="{{ page_obj.start_index }}">
-{% else %}
-<ol>
-{% endif %}
-{% for search in object_list %}
-  <li>
-      <a href="{% url 'search_detail' pk=search.pk %}">
-          <b>{{ search }}</b>
-      </a>
-  </li>
-{% endfor %}
-</ol>
-{% if is_paginated %}
-<div class="pagination">
-    {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">More &raquo;</a>
-    {% endif %}
+{% if messages %}
+<div class="row">
+    <div class="messages col-md-2 col-md-offset-5">
+    {% for message in messages %}
+    <p{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+</div>
 </div>
 {% endif %}
-{% endif %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="well">
+          <table id="search_table">
+            <thead>
+              <th width="10%">Date Created</th>
+              <th width="10%">Min Price</th>
+              <th width="10%">Max Price</th>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

@@ -1,28 +1,124 @@
-<html>
-<head>
-  <title>CarMarketValues</title>
-  {% load bootstrap3 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %} 
-  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/main.css" />
-</head>
-<body>
-<h1>CarMarketValues</h1>
+{% load static from staticfiles %}
+{% load bootstrap3 %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>{% block title %}{% endblock %}</title>
+    {% bootstrap_css %}
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link href="{% static "css/custom.css" %}" rel="stylesheet">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+    
+    {% bootstrap_javascript %} 
+ <style>
+      input.required, error {
+        border: 2px solid red;
+      }
+    </style>
+  {% block customcss %}
+            <style>
+                body {margin-top: 40px;
+                      margin-bottom: 70px; }
+            </style>
+   {% endblock %}
+   </head>
+<body>
+<div class="row">
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+            <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="implement something">
+                  <span class="glyphicon glyphicon-tint"></span> Market values of Car </a>
+            </div>
+           <div class="collapse navbar-collapse navbar-ex1-collapse">
+              <ul class="nav navbar-nav navbar-right">
+              {% if user.is_authenticated %}
+                    <li><a href="{% url 'search_create' %}">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;New Search</a>
+                    </li>
+
+                    <li><a href="{% url 'searchhome' %}">
+                        <span class="glyphicon glyphicon-th"></span>&nbsp;Searches</a>
+                    </li>
+
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                         <span class="glyphicon glyphicon-stats"></span>&nbsp;Reports <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="implement this">Raw Data</a></li>
+                      <li><a href="implement this">Graphs</a></li>
+                      <li class="divider"></li>
+                      <li><a href="implement this">Email Report</a></li>
+                    </ul>
+                    </li>
+
+                    <li class="dropdown active">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span>&nbsp;
+                        {{ user }} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="usersettings">Account Settings</a></li>
+                      <li><a href="password_change'">Change Password</a></li>
+                      <li class="divider"></li>
+                      <li><a href="help">Help</a></li>
+                      <li class="divider"></li>
+                      <li><a href="{% url 'logout' %}">Log Out</a></li>
+                    </ul>
+                    </li>
+                    {% else %}
+                    <div class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form" action="" method="post">
+          {% csrf_token %}
+            <div class="form-group {% if login_failed %} has-error {% endif %}">
+            {{ form.username.label_tag }}
+              <input type="text" placeholder="Uname or Email" class="form-control" {% if login_failed %}
+                     id = "inputError" {% endif %} name="username">
+            </div>
+            <div class="form-group {% if login_failed %} has-error {% endif %}">
+              <input type="password" placeholder="Password" class="form-control" name="password"
+              {% if login_failed %} id = "inputError" {% endif %}>
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+            {% if login_failed %}
+              <p class="has-error"><span class="help-block">
+              Your username and password didn't match. Please try again</span></p>
+            {% endif %}
+          </form>
+          {% endif %}
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container -->
+        </nav>
+        </div>
 {% block content %}
+<h1>CarMarketValues</h1>
 {% endblock %}
 
-<footer>
-  <p>
-    <a href="{% url 'home' %}">Home</a> |
+<div class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container" >
+  <p class="navbar-text pull-left">site developers</p>
+  <a class="navbar-btn btn-danger btn pull-right btn-sm" href="{% url 'home' %}">Home</a>
 {% if user.is_authenticated %}
-    <a href="{% url 'search_create' %}">Submit Search</a> | 
-    <a href="{% url 'logout' %}">Logout</a> |
+  <a class="navbar-btn btn-info btn pull-right btn-sm" href="{% url 'search_create' %}">Submit Search</a> 
+  <a class="navbar-btn btn-danger btn pull-right btn-sm" href="{% url 'logout' %}">Logout</a>
 {% else %}
-    <a href="{% url 'registration_register' %}">Register</a> |
+    <a href="{% url 'registration_register' %}">Register</a> 
     <a href="{% url 'login' %}">Login</a> 
 {% endif %}
   </p>
-</footer>
+  </div>
+</div>
 </body>
 </html>

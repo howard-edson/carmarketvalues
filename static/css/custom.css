@@ -1,0 +1,49 @@
+.search_list_container{
+     margin-top: 100px;
+     margin-left:100px; 
+     margin-right:100px;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 30px;
+  background-color: #f5f5f5;
+  margin-right:0px;
+  margin-left:0px;
+}
+
+/******* begin css for custom nav-bar *******/
+.navbar-custom {
+    background-color:#229922;
+    color:#ffffff;
+    border-radius:0;
+}
+
+.navbar-custom .navbar-nav > li > a {
+    color:#fff;
+}
+.navbar-custom .navbar-nav > .active > a, .navbar-nav > .active > a:hover, .navbar-nav > .active > a:focus {
+    color: #ffffff;
+    background-color:transparent;
+}
+.navbar-custom .navbar-brand {
+    color:#eeeeee;
+}
+
+.navbar-custom .navbar-nav > li > a:hover, .navbar-custom .navbar-nav > li > a:focus {
+    /*background-color: #FFFF00;*/
+    background-color:transparent; 
+    color: #333;
+}
+
+ .navbar-custom a.navbar-brand:hover  {
+    background-color:transparent; 
+    color: #333;
+}
+
+/******* end css for custom navbar*******/
+
+
