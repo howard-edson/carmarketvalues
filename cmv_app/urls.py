@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required as auth
 from django.contrib import admin
 from cmv_app.views import SearchListView, SearchCreateView,\
     SearchUpdateView, SearchDeleteView, SearchListJson, PostingsListView
+from shortcuts import filter_view
 admin.autodiscover()
 
 
@@ -17,5 +18,5 @@ url(r"^update/(?P<pk>\d+)/$", auth(SearchUpdateView.as_view()),
         name="search_update"),
 url(r"^delete/(?P<pk>\d+)/$", auth(SearchDeleteView.as_view()),
         name="search_delete"),
- url(r'^list_json/$',SearchListJson.as_view(),name='search_list_json'),
+ url(r'^list_json/$',SearchListJson.as_view(),name='search_list_json')
  )

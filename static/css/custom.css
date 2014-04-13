@@ -46,4 +46,26 @@
 
 /******* end css for custom navbar*******/
 
+.center {
+	text-align: center;
+}
+
+.right {
+	text-align:right;
+}
+
+.left {
+	text-align:left;
+}
+
+th {
+  text-align: center;
+}
+
+.table-list{
+	border-color: #22081E;
+}
+
+
+
 

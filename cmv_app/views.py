@@ -104,7 +104,7 @@ class SearchDeleteView(DeleteView):
 class SearchListJson(BaseDatatableView):
     model = Search
 
-    columns=['title','created','max_price', 'min_price','actions']
+    columns=['title','created','min_price', 'max_price','actions']
     #columns=['max_price']
     order_columns = ['created', 'max_price']
     max_display_length = 500
