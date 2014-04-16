@@ -8,7 +8,7 @@ def populate():
     
     users=[add_user("user1", 123),add_user("user2",123),add_user("user3",123)]
     
-    regions=[add_region("seattle"),add_region("california"),add_region("New york")]
+    regions=[add_region("seattle")]
     
     for (user,region) in zip(users,regions):
         for i in range(6):

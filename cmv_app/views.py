@@ -98,15 +98,14 @@ class SearchDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(SearchDeleteView, self).delete(request, *args, **kwargs)
-        
-            
+
     
 class SearchListJson(BaseDatatableView):
     model = Search
 
     columns=['title','created','min_price', 'max_price','actions']
     #columns=['max_price']
-    order_columns = ['created', 'max_price']
+    order_columns = ["title",'created', 'min_price','max_price',"actions"]
     max_display_length = 500
 
     def render_column(self, row, column):
@@ -118,9 +117,7 @@ class SearchListJson(BaseDatatableView):
         if column == 'title':
              value = '{0}=>{1}:{2}-{3}'.format(row.vehicle_make,row.vehicle_model,
                                            row.max_year,row.min_year)
-             #edit_url = reverse('search_detail', args=(row.id,))
              edit_url = reverse('postings_list', args=(row.id,))
-             #print self.get_value_cell_style(edit_url, value,'red')
              return self.get_value_cell_style(edit_url, value,'red')
 
         if column == 'max_price':

@@ -1,3 +1,8 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .search_list_container{
      margin-top: 100px;
      margin-left:100px; 
@@ -62,9 +67,26 @@ th {
   text-align: center;
 }
 
-.table-list{
-	border-color: #22081E;
+#search-table{
+  border-color: #22081E;
 }
+
+.table-list{
+  border-color: #22081E;
+  overflow: hidden;
+  table-layout: fixed; 
+
+}
+
+.navbar-fixed-bottom {
+	position: fixed;
+}
+
+
+
+
+
+
 
 
 
