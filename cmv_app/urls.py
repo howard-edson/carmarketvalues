@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required as auth
 from django.contrib import admin
-from cmv_app.views import SearchListView, SearchCreateView, SearchDetailView,\
+from cmv_app.views import SearchListView, SearchCreateView,\
     SearchUpdateView, SearchDeleteView, search_report
 from cmv_app.views import SearchListView, SearchCreateView,\
     SearchUpdateView, SearchDeleteView, SearchListJson, PostingsListView

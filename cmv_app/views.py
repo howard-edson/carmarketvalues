@@ -116,12 +116,8 @@ def search_report(request, pk):
             price=Avg('vehicle_price'),
             tcount=Count('title'),
         )
-
-        return render(request, 'cmv_app/search_report.html', context)
-    else:
-        pass
-        # return 404!
-
+    return render(request, 'cmv_app/search_report.html', context)
+    
 class SearchListJson(BaseDatatableView):
     model = Search
 

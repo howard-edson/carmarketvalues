@@ -8,6 +8,7 @@ from crispy_forms.bootstrap import FormActions, AppendedText, InlineCheckboxes,\
     InlineField
 from django.core.urlresolvers import reverse
 import datetime
+from insert_regions import regions
 
 
 class SearchForm(forms.ModelForm):
@@ -24,8 +25,7 @@ class SearchInputForm(forms.ModelForm):
     #provide region here for dropdown menu
     region=forms.ChoiceField(
         label = "region",
-        choices = (("seattle", "seattle"), ("california", "california"),
-                   ("New york","New york"),),
+        choices = tuple([(reg,reg) for reg in regions]),
         #widget = forms.RadioSelect,
         initial = 'california',
         required = True,

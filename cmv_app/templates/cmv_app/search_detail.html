@@ -13,7 +13,7 @@
 
   <a href="{% url 'search_update' pk=search_pk %}">Edit</a> | 
   <a href="{% url 'search_delete' pk=search_pk %}">Delete</a> |
-  <a href="{% url 'search_report' pk=object.pk %}">Report</a>
+  <a href="{% url 'search_report' pk=search_pk %}">Report</a>
 
 {% else %}
   <p>Please <a href="{% url 'login' %}">log in </p>
