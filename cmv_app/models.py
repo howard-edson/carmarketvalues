@@ -69,8 +69,11 @@ class Posting(models.Model):
     last_updated = models.DateField(auto_now=True)
     vehicle_year = models.PositiveIntegerField(null=True, blank=True)
     vehicle_price = models.PositiveIntegerField(null=True, blank=True)
-    title = models.CharField(max_length=100, verbose_name="posting title")
+    title = models.CharField(max_length=200, verbose_name="posting title")
     body = models.TextField(verbose_name="posting body text")
 
     def __unicode__(self):
         return "{0} ({1})".format(self.title, self.last_updated)
+
+    class Meta:
+        select_on_save = True
