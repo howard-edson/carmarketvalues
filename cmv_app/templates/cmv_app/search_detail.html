@@ -2,16 +2,19 @@
 
 {% block content %}
 
-{% if object.user == user %}
-  <h2>Search results for {{ object }}</h2>
+{% if currentuser == user %}
+  <h2>Search results for {{ search }}</h2>
   
-  <div class="postings">
-      <b>query results from postings will come here</b>
+  <div class="container">
+      {% for post in posts %}
+      <li>{{ post }}</li>
+      {% endfor %}
   </div>
 
-  <a href="{% url 'search_report' pk=object.pk %}">Report</a> |  
-  <a href="{% url 'search_update' pk=object.pk %}">Edit</a> | 
-  <a href="{% url 'search_delete' pk=object.pk %}">Delete</a>
+  <a href="{% url 'search_update' pk=search_pk %}">Edit</a> | 
+  <a href="{% url 'search_delete' pk=search_pk %}">Delete</a> |
+  <a href="{% url 'search_report' pk=object.pk %}">Report</a>
+
 {% else %}
   <p>Please <a href="{% url 'login' %}">log in </p>
 {% endif %}

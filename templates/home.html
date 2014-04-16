@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+{% block title %}cmv{% endblock %}
+{% block customcss %}          
+{% endblock %}
+{% block content %}
+            <style>
+                body {margin-top: 100px;
+                      margin-left:100px;
+                      margin-right:100px;}
+            </style>
+
+	<div class="container">
+      <div class="jumbotron">
+		<div class="container">
+          <h1>CarMarketValues</h1>
+          <p class="lead">Welcome to Carmarketvalues.com.
+          Register to get the latest updates on your dream cars</p>
+            <p><a class="btn btn-lg btn-primary" 
+				  href="{% url 'registration_register' %}">Register</a> 
+			  &nbsp;
+              <a class="btn btn-lg btn-success" 
+				  href="{% url 'login' %}">Sign in</a>
+            </p>
+		</div> <!-- /.container -->
+	  </div> <!-- /.jumbotron -->
+    </div> <!-- /.container -->
+{% endblock %}
+

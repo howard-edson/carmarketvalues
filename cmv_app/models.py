@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 # Note: Users will be stored in django's automatically-created users table
 
@@ -52,6 +53,10 @@ class Search(models.Model):
 
     class Meta:
         verbose_name_plural = "searches"
+        
+    def get_absolute_url(self):
+        return reverse('postings-list',kwargs={'pk':self.id})
+        
 
 
 class Posting(models.Model):

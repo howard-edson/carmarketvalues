@@ -1,34 +1,93 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
+{% load static from staticfiles %}
+{% block title %}CMV{% endblock %}
 
+{% block customcss %}
+
+<!-- <link href="{% static "css/datable.bootstrap.css" %}" rel="stylesheet"> -->
+<link href="{% static "css/jquery.dataTables.css" %}" rel="stylesheet">
+<link href="{% static "css/TableTools.css" %}" rel="stylesheet">
+
+
+<style>
+body {margin-top: 75px;}
+     body { padding-bottom: 70px; }
+
+</style>
+
+
+<script src="{% static "js/scripts.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+var oTable = $('#search_table').dataTable( {
+        "sDom": 'T<"clear">lrtip',
+        "oTableTools": {
+            "sSwfPath": "{% static 'extras/copy_csv_xls_pdf.swf' %}",
+		    "aButtons": [ "csv", "pdf", "print" ],
+        },
+        "bProcessing": true,
+        "bServerSide": true,
+        "bStateSave": true,
+        "sAjaxSource": "{% url 'search_list_json' %}",
+        // Disable sorting for the Actions column.
+        "aaSorting": [ [1,"desc" ]],
+        //'aLengthMenu':[[35,'-1'],['Paged','All']],
+        "iDisplayLength":10,
+        "sPaginationType": "full_numbers",
+        //"sPaginationType": "bs_full",
+        "oLanguage": {
+            "oPaginate":{
+                "sFirst":'<<',
+                "sLast": '>>',
+                "sNext": '>',
+                "sPrevious": '<'
+                },
+            
+            "sInfo":'{{ "Showing _START_ to _END_ of _TOTAL_ entries" }}',
+            "sZeroRecords": "No data to show"
+            },
+            "aoColumns": [
+            { "sClass": "center","bSortable": false  },
+            { "sClass": "center","bSortable": true },
+            { "sClass": "center","bSortable": true },
+            { "sClass": "center","bSortable": true },
+            { "sClass": "center","bSortable": false}
+        ]
+    } );
+} );
+</script>  
+<script src="{% static 'js/TableTools.min.js' %}"></script>
+<!-- <script src="{% static 'js/bootstrap.datatable.js' %}"></script> -->
+
+{% endblock %}
 {% block content %}
-
-{% if not user.is_authenticated %}
-    <div> 
-    <a href="{% url 'login' %}">Login or</a>
-    <a href="{% url 'registration_register' %}">Register</a>
-    to create your searches 
-    </div>
-{% else %}
-{% if is_paginated %}
-<ol start="{{ page_obj.start_index }}">
-{% else %}
-<ol>
-{% endif %}
-{% for search in object_list %}
-  <li>
-      <a href="{% url 'search_detail' pk=search.pk %}">
-          <b>{{ search }}</b>
-      </a>
-  </li>
-{% endfor %}
-</ol>
-{% if is_paginated %}
-<div class="pagination">
-    {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">More &raquo;</a>
-    {% endif %}
+{% if messages %}
+<div class="row">
+    <div class="messages col-md-2 col-md-offset-5">
+    {% for message in messages %}
+    <p{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+</div>
 </div>
 {% endif %}
-{% endif %}
-
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="well table-list">
+          <table id="search_table">
+            <thead>
+              <th width="12%" class="table-title"><center>Title</center></th>
+              <th width="8%"><center>Date Created</center></th>
+              <th width="8%"><center>Min Price</center></th>
+              <th width="8%">Max Price</th>
+              <th width="8%"></th>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <br>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
