@@ -15,7 +15,7 @@ from cmv_app.forms import SearchForm, SearchInputForm, SearchCreateForm,\
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib import messages
-from django.http.response import Http404
+from django.http.response import Http404, HttpResponse
 from django.contrib.messages.views import SuccessMessageMixin
 from cmv_app.shortcuts import populate_one_search
 
@@ -165,6 +165,11 @@ class SearchListJson(BaseDatatableView):
         Filter records to show only entries from the currently logged-in user.
         """
         return Search.objects.filter(user=self.request.user.id)
+    
+
+def get_model_forMake(request,make):
+     if not request.is_ajax():
+                return HttpResponse("you cant access here")
 
 #Not implemented
 # class UserProfileDetailView(DetailView):

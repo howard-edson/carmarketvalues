@@ -172,5 +172,7 @@ def populate_one_search(search):
                     logging.info(Posting.objects.count())
                     for obj in Posting.objects.all():
                         logging.info(obj)
+
+
                     
 
