@@ -83,6 +83,18 @@ th {
 }
 
 
+.help-inline{color:white}
+.navbar-right .col-sm-12 .col-sm-5,.navbar-right .col-sm-12 .col-sm-2{
+    padding-right:0px !important;
+    padding-left:3px !important;
+    padding-top:10px;
+}
+
+.form-group.required .control-label:after {
+  content:"*";color:red;
+}
+
+
 
 
 

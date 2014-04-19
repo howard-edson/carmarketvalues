@@ -1,21 +1,16 @@
 {% extends "base.html" %}
-{% load bootstrap3 %}
-{% load static from staticfiles %}
-{% block customcss %}
 {% load crispy_forms_tags %}
-            <style>
-                body {margin-top: 100px;
-                      margin-left:100px;
+{% block customcss %}
+<style>
+                body {
+                	margin-top: 100px;
+                     margin-left:100px;
                       margin-right:100px;
-                      margin-bottom: 70px; }
+                      margin-bottom: 70px; 
+                  }
             </style>
-<script src="{% static "js/custom.js" %}"></script>  
-   {% endblock %}
+{% endblock %}
 
 {% block content %}
-
-<div class="container">
-    {% crispy form %}
-</div>
-    
+<div class="container">{% crispy form %}</div>
 {% endblock %}

@@ -10,7 +10,10 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from django.conf.global_settings import SESSION_EXPIRE_AT_BROWSER_CLOSE
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+AUTHENTICATION_BACKENDS=("cmv_project.backends.customBackend.EmailOrUsernameModelBackend",)
 
 # this code is necessary to keep secrets out of github.com, and so that
 # each developer can use his own.
@@ -46,6 +49,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'registration',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -67,7 +71,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'custom_middlewares.TimeOutMiddleware',
+    'custom_middlewares.AutoLogout',
 )
+#delay 2 minutes for logout
+AUTO_LOGOUT_DELAY=2
 
 TEMPLATE_CONTEXT_PROCESSORS =(
 'django.contrib.auth.context_processors.auth',
@@ -78,6 +86,8 @@ ROOT_URLCONF = 'cmv_project.urls'
 WSGI_APPLICATION = 'cmv_project.wsgi.application'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Database
@@ -126,6 +136,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+
+#Handle session is not Json Serializable
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -160,3 +175,11 @@ LOGGING = {
         },
     }
 }
+
+#ACCOUNT_ACTIVATION_DAYS=2./24 (for 2 hours)
+ACCOUNT_ACTIVATION_DAYS=1
+EMAIL_HOST='localhost'
+EMAIL_PORT=1025
+EMAIL_HOST_USER=''
+EMAIL_HOST_PASSWORD=''
+DEFAULT_FROM_EMAIL = 'testing@example.com'

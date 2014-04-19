@@ -63,13 +63,9 @@ var oTable = $('#search_table').dataTable( {
 {% endblock %}
 {% block content %}
 {% if messages %}
-<div class="row">
-    <div class="messages col-md-2 col-md-offset-5">
     {% for message in messages %}
-    <p{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</p>
+    <div {% if message.tags %} style="text-align:center" class="messages col-md-4 col-md-offset-4 alert alert-{{ message.tags }}"{% endif %}><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;{{ message }}</div>
     {% endfor %}
-</div>
-</div>
 {% endif %}
   <div class="container">
     <div class="row">

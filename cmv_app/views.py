@@ -17,6 +17,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib import messages
 from django.http.response import Http404
 from django.contrib.messages.views import SuccessMessageMixin
+from cmv_app.shortcuts import populate_one_search
 
 class SearchListView(ListView):
     """
@@ -68,16 +69,17 @@ class SearchCreateView(CreateView):
         if form.cleaned_data['submit_button_type'] == 'submit_and_add':
             self.success_url = reverse_lazy("search_create")
         messages.add_message(self.request, messages.SUCCESS,
-                                 "search successfully saved. You may \
-                                 add another.")
+                                 "search saved succcessfully")
+        populate_one_search(search=Search.objects.get(pk=f.id))
         return super(SearchCreateView, self).form_valid(form)
 
-class SearchUpdateView(UpdateView):
+class SearchUpdateView(SuccessMessageMixin,UpdateView):
     """
     updates an existing saved search of the user
     """
     model = Search
     form_class = SearchUpdateForm
+    success_message="succcesfully updated"
     
     success_url = reverse_lazy("searchhome")
 

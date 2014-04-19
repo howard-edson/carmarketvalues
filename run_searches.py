@@ -111,6 +111,9 @@ class Entry(object):
         match_object = p_price.search(self.title)
         if match_object:
             self.vehicle_price = int(match_object.group(0))
+            
+    def __str__(self):
+        return "%s-%s-%s-%s" %(self.vehicle_price,self.vehicle_year,self.posting_url,self.title)
 
 
 if __name__ == "__main__":
@@ -120,8 +123,11 @@ if __name__ == "__main__":
     searches = Search.objects.all()
     logging.info('Retrieved %s searches' % len(searches))
     for search in searches:
+        print "inside loop"
         logging.info('Search: %s' % search)
+        print search.regions.all()
         for region in search.regions.all():
+            logging.info('region: %s' %region)
             search_url = make_url(search, region)
             if search_url:
                 logging.info('URL: %s' % search_url)
@@ -135,6 +141,7 @@ if __name__ == "__main__":
                 logging.info('No document retrieved from craigslist')
             for entry in doc.entries:
                 e = Entry(entry)
+                logging.info(e)
                 if not ('wanted' in e.title or 'wtb' in e.title):
                     try:
                         # see if posting exists already, and if so, update it
@@ -156,5 +163,8 @@ if __name__ == "__main__":
                         logging.info('New posting created')
                     finally:
                         posting.search.add(search)
+                        logging.info(Posting.objects.count())
+                        for obj in Posting.objects.all():
+                            logging.info(obj)
                     if not posting:
                         logging.warning('Error: Posting not created')

@@ -27,7 +27,7 @@ class SearchInputForm(forms.ModelForm):
         label = "region",
         choices = tuple([(reg,reg) for reg in regions]),
         #widget = forms.RadioSelect,
-        initial = 'california',
+        initial = 'seattle',
         required = True,
     )
 
@@ -51,7 +51,7 @@ class SearchInputForm(forms.ModelForm):
             HTML('''
                 {% if messages %}
                 {% for message in messages %}
-                <p {% if message.tags %}
+                <p {% if message.tags %} style="text-align:center"
                 class="alert alert-{{ message.tags }}"
                 {% endif %}>{{ message }}</p>{% endfor %}{% endif %}
                 '''),
@@ -94,7 +94,7 @@ class SearchCreateForm(SearchInputForm):
         self.helper.add_input(Submit('submit', 'Save'))
         self.helper.add_input(Button(
             'cancel', 'Cancel', onclick='location.href="%s";' % \
-                                        reverse('home')))
+                                        reverse('searchhome')))
         
             
 class SearchUpdateForm(SearchInputForm):

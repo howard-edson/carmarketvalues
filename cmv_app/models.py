@@ -78,7 +78,7 @@ class Posting(models.Model):
     body = models.TextField(verbose_name="posting body text")
 
     def __unicode__(self):
-        return "{0} ({1})".format(self.title, self.last_updated)
+        return u"{0} ({1})".format(self.title, self.last_updated)
 
     class Meta:
         select_on_save = True

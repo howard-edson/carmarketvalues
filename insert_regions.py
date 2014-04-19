@@ -7,10 +7,10 @@ our Region model and the django queryset api.
 
 """
 # make it possible to leverage our django models in this script
+from __future__ import unicode_literals
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cmv_project.settings")
 from cmv_app.models import Region
-
 # a list of major US metro areas on craigslist
 regions = [
     'atlanta',
