@@ -1,0 +1,8 @@
+/__init__.pyc
+/admin.pyc
+/auth_urls.pyc
+/forms.pyc
+/models.pyc
+/signals.pyc
+/urls.pyc
+/views.pyc
