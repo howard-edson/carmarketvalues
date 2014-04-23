@@ -1,28 +1,42 @@
 $(document).ready(function() {
-var oTable = $('#search_table').dataTable( {
-        "sDom": 'T<"clear">lrtip',
-        "oTableTools": {
-            "sSwfPath": "{% static 'extras/copy_csv_xls_pdf.swf' %}",
-		    "aButtons": [ "csv", "pdf", "print" ]
-        },
-        "bProcessing": true,
-        //"bServerSide": true,
-        //"sAjaxDataProp": "aaData",
-        //"sServerMethod": "POST",
-        //"sAjaxSource": "{% static 'js/simple.json' %}",
-        "sAjaxSource": "{% url 'search_list_json' %}",
-        "aaSorting": [ [1,'desc'], [2,'desc'] ],
-        // Disable sorting for the Actions column.
-        "aoColumnDefs": [ { "bSortable": false, "aTargets": [ 0,4 ] } ],
-        "iDisplayLength":10,
-        "sPaginationType": "full_numbers"
-    } );
 
-$(function() {
+$('.carousel').carousel({
+     interval:2000
+});
+
+
     // Sets the value of the submit_button_type field if the 'Submit & Add
-    // Another button is clicked.
+    // Another button is clicked. */
     $('#submit-id-submit_and_add').click(function() {
         $('#id_submit_button_type').val('submit_and_add');
     });
+
+
+var make=$('select[name=vehicle_make]').val();
+var model=$('#id_model').val();
+
+if (make && make != 'NA') {
+        request_url = '/search/get_models/' + make +'/';
+        $.ajax({
+            url: request_url,
+            dataType: 'json',
+            type: "GET", 
+            success: function(data){
+            	$('select[name=vehicle_model]').find('option').remove().end();
+            	$('select[name=vehicle_model]').append('<option value="NA"> --------------- SELECT MAKE ------------- </option>');
+            	
+                $.each(data, function(key, value){
+                    $('select[name=vehicle_model]').append('<option value="' + value + '">' + value +'</option>');
+                    var t='select[name=vehicle_model] option[value="'+model+'"]';
+                    
+                    $(t).attr("selected","selected");
+                    //$('option[value=model]').attr("selected",true);
+                    $("select[name=vehicle_model]").attr('disabled', false);
+                });
+        }
+        
+    });
+    }
+
+
 });
-} );

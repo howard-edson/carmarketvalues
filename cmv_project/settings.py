@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     'south',
     'crispy_forms',
     'bootstrap3',
+    'passwords',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -183,3 +184,15 @@ EMAIL_PORT=1025
 EMAIL_HOST_USER=''
 EMAIL_HOST_PASSWORD=''
 DEFAULT_FROM_EMAIL = 'testing@example.com'
+
+
+PASSWORD_COMPLEXITY = { # You can ommit any or all of these for no limit for that particular set
+    "UPPER": 1,       # Uppercase
+    "LOWER": 1,       # Lowercase
+    "DIGITS": 1,      # Digits
+    #"PUNCTUATION": 1, # Punctuation (string.punctuation)
+    #"NON ASCII": 1,   # Non Ascii (ord() >= 128)
+    #"WORDS": 1        # Words (substrings seperates by a whitespace)
+}
+
+PASSWORD_MIN_LENGTH = 8

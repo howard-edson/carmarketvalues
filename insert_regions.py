@@ -38,6 +38,8 @@ regions = [
     'washingtondc'
 ]
 
+print "from insert_regions"
+
 Region.objects.all().delete()
 
 for region in regions:

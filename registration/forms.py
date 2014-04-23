@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 import re
+from passwords.fields import PasswordField
 
 
 
@@ -45,11 +46,16 @@ class RegistrationForm(forms.Form):
                                 error_messages={'invalid': _("invalid characters")})
     email = forms.EmailField(label=_("E-mail"))
     password1 = forms.CharField(widget=forms.PasswordInput,
-                                label=_("Password"))
-    password2 = forms.CharField(widget=forms.PasswordInput,
-                                label=_("Password (again)"),
-                                help_text="must contain 8 or more characters with atleast \
-                                one capitalized and special character",)
+                                 label=_("Password"))
+#     password2 = forms.CharField(widget=forms.PasswordInput,
+#                                 label=_("Password (again)"),
+#                                 help_text="must contain 8 or more characters with atleast \
+#                                 one capitalized and special character",)
+
+    #password1=PasswordField(label=_("Password"))
+    password2=PasswordField(label=_("Password (again)"),
+                                 help_text="must contain 8 or more characters with atleast \
+                                 one capitalized and special character")
     
     first_name=forms.RegexField(regex=r'^[\w.@+-]+$',
                                 required=False,
@@ -90,19 +96,19 @@ class RegistrationForm(forms.Form):
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
                 raise forms.ValidationError(_("The two password fields didn't match."))
-        password1 = self.cleaned_data.get("password1")
-        if len(password1)<8:
-            raise forms.ValidationError(
-            self.error_messages['password_length'],
-            code='password_length',
-        )
-        if not (re.search(r'[a-z]', password1) and 
-                re.search(r'[A-Z]', password1) and
-                re.search(r'[^a-zA-Z\d\s:;]',password1)):
-            raise forms.ValidationError(
-            self.error_messages['password_invalid'],
-            code='password_invalid',
-        )
+#        password1 = self.cleaned_data.get("password1")
+#         if len(password1)<8:
+#             raise forms.ValidationError(
+#             self.error_messages['password_length'],
+#             code='password_length',
+#         )
+#         if not (re.search(r'[a-z]', password1) and 
+#                 re.search(r'[A-Z]', password1) and
+#                 re.search(r'[^a-zA-Z\d\s:;]',password1)):
+#             raise forms.ValidationError(
+#             self.error_messages['password_invalid'],
+#             code='password_invalid',
+#         )
         return self.cleaned_data['password2']
 
     def clean(self):

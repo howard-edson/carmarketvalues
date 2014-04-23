@@ -38,5 +38,9 @@ urlpatterns=patterns('',
 
     url(r'^list_json/$',ajax_required(SearchListJson.as_view()),
        name='search_list_json'),
+    
+     url(r'get_models/(?P<make>\w+)/$',
+         "cmv_app.views.get_makes_json",
+         name="get_models_make_json"),
                      
  )

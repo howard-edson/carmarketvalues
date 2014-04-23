@@ -4,6 +4,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, HTML, Fieldset, Field, Submit, Button
 from crispy_forms.bootstrap import FormActions
 from django.core.urlresolvers import reverse
+from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
+from django.utils.translation import ugettext_lazy as _
+from passwords.fields import PasswordField
 
 
 class UserSettingsForm(forms.Form):
@@ -71,3 +74,12 @@ class UserSettingsForm(forms.Form):
                                             'this email address.')
 
         return email
+    
+
+
+ 
+class ValidatingSetPasswordForm(SetPasswordForm):
+    new_password2 = PasswordField(label=_("New password confirmation"))
+ 
+class ValidatingPasswordChangeForm(PasswordChangeForm):
+    new_password2 = PasswordField(label=_("New password confirmation"))

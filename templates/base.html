@@ -14,6 +14,7 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.js"></script>
+  <script src="{% static "js/custom.js" %}" ></script>
   {% bootstrap_javascript %}
   {% load bootstrap3 %}
 {% load static from staticfiles %}
@@ -147,9 +148,7 @@
         <!-- /.navbar-collapse --> </div>
       <!-- /.container --> </nav>
   </div>
-  {% block content %}
-  <h1>CarMarketValues</h1>
-  {% endblock %}
+  {% block content %} {% endblock %}
   <div class="navbar navbar-default navbar-fixed-bottom">
     <div class="container" >
       <p class="navbar-text pull-left">site developers</p>

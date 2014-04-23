@@ -1,16 +1,60 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
+{% load static from staticfiles %}
 {% load crispy_forms_tags %}
 {% block title %}cmv{% endblock %}
 {% block customcss %}          
 {% endblock %}
 {% block content %}
             <style>
-                body {margin-top: 100px;
-                      margin-left:100px;
-                      margin-right:100px;}
+                body {margin-top: 100px;}
+
             </style>
 
+{% block carousel %}
+
+  <div id="myCarousel" class="carousel slide" style="width: 800px; margin:0 auto"  >
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+      <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="item active">
+        <img src="{% static "images/carImages/2013-Toyota-Highlander-Hybrid-car-front-crop.jpg" %}" alt="car1" class="img-responsive">
+        <div class="carousel-caption">
+          <h3>Toyota Highlander Hybrid</h3>
+        </div>
+      </div>
+      <div class="item">
+        <img src="{% static "images/carImages/2013-Toyota-Highlander-Hybrid-car-interior-dashboard-crop.jpg" %}" alt="car1" class="img-responsive">
+        <div class="carousel-caption">
+          <h3>Toyota Highlander-dashboard</h3>
+        </div>
+      </div>
+      <div class="item">
+        <img src="{% static "images/carImages/2013-Toyota-Highlander-Hybrid-car-rear-side-crop.jpg" %}" alt="car1" class="img-responsive">
+        <div class="carousel-caption">
+          <h3>Toyota Highlander rear</h3>
+        </div>
+      </div>
+      <div class="item">
+        <img src="{% static "images/carImages/2013-Toyota-Prius-Plug-in-Hybrid-silver-car-front-view-crop.jpg" %}" alt="car1" class="img-responsive">
+        <div class="carousel-caption">
+          <h3>Toyota Prius hybrid</h3>
+        </div>
+      </div>
+    </div>
+    <a class="carousel-control left" href="#myCarousel" data-slide="prev">
+      <span class="icon-prev"></span>
+    </a>
+    <a class="carousel-control right" href="#myCarousel" data-slide="next">
+      <span class="icon-next"></span>
+    </a>
+
+  </div>
+{% endblock carousel %}
 	<div class="container">
       <div class="jumbotron">
 		<div class="container">
@@ -26,5 +70,5 @@
 		</div> <!-- /.container -->
 	  </div> <!-- /.jumbotron -->
     </div> <!-- /.container -->
-{% endblock %}
+{% endblock content %}
 

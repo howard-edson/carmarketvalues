@@ -30,4 +30,5 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', view=auth(SearchListView.as_view()), name='searchhome'),
     #url(r'^accounts/register$',SearchListView.as_view(),name='registration_register'),
     #url(r'^', redirect('home')),
+   
 )

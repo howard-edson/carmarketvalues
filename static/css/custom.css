@@ -1,6 +1,15 @@
+body {
+  overflow-x:hidden;
+}
+
 * {
   margin: 0;
   padding: 0;
+}
+
+.row {
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .search_list_container{
@@ -92,6 +101,22 @@ th {
 
 .form-group.required .control-label:after {
   content:"*";color:red;
+}
+
+/*.form-group.required:not(input[type='checkbox']) .control-label:after, 
+.form-group.required input[type='checkbox'] .text:after { /* change .text in whatever class of the text after the checkbox has 
+   content:"*";
+   color:red;*/
+} 
+
+.asteriskField {
+  color: red;
+}
+
+.container .jumbotron {
+  margin-right:50px;
+  margin-left:50px;
+  margin-top:50px;
 }
 
 

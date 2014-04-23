@@ -1,5 +1,6 @@
 from django.http import HttpResponseBadRequest
 from django.http.response import HttpResponse
+from django import forms
 
 def ajax_required(f):
     """
@@ -172,6 +173,47 @@ def populate_one_search(search):
                     logging.info(Posting.objects.count())
                     for obj in Posting.objects.all():
                         logging.info(obj)
+
+
+MODELS_MAKE={
+             "toyota":['highlander','prius','carolla','rav4'],
+             "honda":['civic','crv','fit'],
+             "ford":['focus','escape','explorer']
+             }
+
+MAKES=(("NA","------"),)
+MAKES+=tuple((make,make) for make in ("toyota","honda","ford"))
+
+regions = (
+    'atlanta',
+    'austin',
+    'boston',
+    'chicago',
+    'dallas',
+    'denver',
+    'detroit',
+    'houston',
+    'lasvegas',
+    'losangeles',
+    'miami',
+    'minneapolis',
+    'newyork',
+    'orangecounty',
+    'philadelphia',
+    'phoenix',
+    'portland',
+    'raleigh',
+    'sacramento',
+    'sandiego',
+    'seattle',
+    'sfbay',
+    'washingtondc',
+)
+
+
+class DynamicChoiceField(forms.ChoiceField): 
+    def clean(self, value): 
+        return value
 
 
                     

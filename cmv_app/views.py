@@ -17,7 +17,9 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib import messages
 from django.http.response import Http404, HttpResponse
 from django.contrib.messages.views import SuccessMessageMixin
-from cmv_app.shortcuts import populate_one_search
+from cmv_app.shortcuts import populate_one_search, MODELS_MAKE
+from django.utils import simplejson
+from django.core.exceptions import PermissionDenied
 
 class SearchListView(ListView):
     """
@@ -63,15 +65,21 @@ class SearchCreateView(CreateView):
     def form_valid(self, form):
         f = form.save(commit=False)
         region=self.request.POST['region']
+        vehicle_make=self.request.POST['vehicle_make']
+        vehicle_model=self.request.POST['vehicle_model']
         f.user = self.request.user
+        f.vehicle_make=vehicle_make
+        f.vehicle_model=vehicle_model
         f.save()
         f.regions.add(Region.objects.get(name=region))
+        
         if form.cleaned_data['submit_button_type'] == 'submit_and_add':
             self.success_url = reverse_lazy("search_create")
         messages.add_message(self.request, messages.SUCCESS,
                                  "search saved succcessfully")
         populate_one_search(search=Search.objects.get(pk=f.id))
         return super(SearchCreateView, self).form_valid(form)
+    
 
 class SearchUpdateView(SuccessMessageMixin,UpdateView):
     """
@@ -82,6 +90,35 @@ class SearchUpdateView(SuccessMessageMixin,UpdateView):
     success_message="succcesfully updated"
     
     success_url = reverse_lazy("searchhome")
+    
+#     def get_form_kwargs(self,**kwargs):
+#         """ Add the Request object to the form's keyword arguments. """
+#         kwargs = super(SearchUpdateView, self).get_form_kwargs(**kwargs)
+#         instance=kwargs.get('instance',None)
+#         print instance.vehicle_make
+#         kwargs.update({'instance': instance})
+#         print("here")
+#         return kwargs
+    
+    def form_valid(self, form):
+        f = form.save(commit=False)
+        region=self.request.POST['region']
+        vehicle_make=self.request.POST['vehicle_make']
+        vehicle_model=self.request.POST['vehicle_model']
+        f.user = self.request.user
+        f.vehicle_make=vehicle_make
+        f.vehicle_model=vehicle_model
+        f.save()
+        f.regions.add(Region.objects.get(name=region))
+        populate_one_search(search=Search.objects.get(pk=f.id))
+        return super(SearchUpdateView, self).form_valid(form)
+    
+    def get_object(self, queryset=None):
+        """ Hook to ensure object is owned by request.user. """
+        obj = super(SearchUpdateView, self).get_object()
+        if not obj.user == self.request.user:
+            raise PermissionDenied
+        return obj
 
 class SearchDeleteView(DeleteView):
     """
@@ -97,7 +134,7 @@ class SearchDeleteView(DeleteView):
         """
         obj=super(SearchDeleteView,self).get_object()
         if not obj.user==self.request.user:
-            raise Http404
+            raise PermissionDenied
         return obj
     
     def delete(self, request, *args, **kwargs):
@@ -167,9 +204,17 @@ class SearchListJson(BaseDatatableView):
         return Search.objects.filter(user=self.request.user.id)
     
 
-def get_model_forMake(request,make):
-     if not request.is_ajax():
-                return HttpResponse("you cant access here")
+def get_makes_json(request,make):
+    if not request.is_ajax():
+            return HttpResponse("you cant access here")
+    models=MODELS_MAKE.get(make,None)
+    if models:
+        results=tuple(models)
+        #print results
+        obj=simplejson.dumps(results)
+        #print obj
+        return HttpResponse(obj, content_type="application/json")
+         
 
 #Not implemented
 # class UserProfileDetailView(DetailView):
