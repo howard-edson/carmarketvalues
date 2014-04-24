@@ -28,11 +28,6 @@ import re
 import datetime
 import HTMLParser
 
-import logging
-logging.basicConfig(filename='single_search.log',
-                    format='%(asctime)s %(message)s',
-                    filemode='w',  # overwrite log file each run 
-                    level=logging.INFO)
 
 pars = HTMLParser.HTMLParser()
 
@@ -128,7 +123,14 @@ class Entry(object):
 
 
 def populate_one_search(search):
-
+    
+    import logging
+    logging.basicConfig(filename='single_search.log',
+                    format='%(asctime)s %(message)s',
+                    filemode='w',  # overwrite log file each run 
+                    level=logging.INFO)
+    
+    print "called here"
     logging.info('search model is %s' %search)
     print search.regions.all()
     for region in search.regions.all():

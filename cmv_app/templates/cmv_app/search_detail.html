@@ -7,7 +7,7 @@
   
   <div class="container">
       {% for post in posts %}
-      <li>{{ post }}</li>
+      <li>{{ post. }}</li>
       {% endfor %}
   </div>
 
@@ -16,7 +16,9 @@
   <a href="{% url 'search_report' pk=search_pk %}">Report</a>
 
 {% else %}
-  <p>Please <a href="{% url 'login' %}">log in </p>
+<div class="jumbotron" style="width: 800px; margin:0 auto" >
+  <p><h1>You do not have priveleges to view this post </h1></p>
+</div>
 {% endif %}
 
 {% endblock %}

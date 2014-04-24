@@ -38,7 +38,7 @@ class PostingsListView(ListView):
     template_name="cmv_app/search_detail.html"
     context_object_name="posts"
     pk=None
-    paginate_by = 5
+    #paginate_by = 5
         
     def get_queryset(self):
         self.pk=self.kwargs.get('pk',None)
@@ -78,7 +78,8 @@ class SearchCreateView(CreateView):
             self.success_url = reverse_lazy("search_create")
         messages.add_message(self.request, messages.SUCCESS,
                                  "search saved succcessfully")
-        populate_one_search(search=Search.objects.get(pk=f.id))
+        #populate_one_search(search=Search.objects.get(pk=f.id))
+        populate_one_search(f)
         return super(SearchCreateView, self).form_valid(form)
     
 
@@ -109,16 +110,23 @@ class SearchUpdateView(SuccessMessageMixin,UpdateView):
         f.user = self.request.user
         f.vehicle_make=vehicle_make
         f.vehicle_model=vehicle_model
+        Posting.objects.filter(search__pk=f.id).delete()
         f.save()
         f.regions.add(Region.objects.get(name=region))
-        populate_one_search(search=Search.objects.get(pk=f.id))
+        print f
+        print type(f)
+        #populate_one_search(search=Search.objects.get(pk=f.id))
+        
+        populate_one_search(f)
         return super(SearchUpdateView, self).form_valid(form)
     
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(SearchUpdateView, self).get_object()
+        #obj= Search.objects.get(pk=self.request.GET.get('pk'))
         if not obj.user == self.request.user:
             raise PermissionDenied
+        print "obj is", obj
         return obj
 
 class SearchDeleteView(DeleteView):
