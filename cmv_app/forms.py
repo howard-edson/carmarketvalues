@@ -11,7 +11,6 @@ import datetime
 from cmv_app.shortcuts import MAKES, DynamicChoiceField, regions
 
 
-
 form_layout=Layout(
             HTML('''
                 {% if messages %}
@@ -123,20 +122,25 @@ class SearchUpdateForm(SearchInputForm):
         self.helper.add_input(Button('delete', 'Delete',
                                      onclick='location.href="%s";' % delete_url,
                                      css_class='btn-danger pull-right'))
-        self.fields['vehicle_make'] = forms.ChoiceField(
-                    initial=self.vehicle_make,
-                    label="Car make",
-                    choices=MAKES,
-                    widget=forms.Select(attrs={'id':'makes'})
-                    )
-        
+#         self.fields['vehicle_make'] = forms.ChoiceField(
+#                     initial=self.vehicle_make,
+#                     label="Car make",
+#                     choices=MAKES,
+#                     widget=forms.Select(attrs={'id':'makes'})
+#                     )
+        #override the initial value of vehicle_make
+        self.fields['vehicle_make'].initial = self.vehicle_make
+                    
+        #the model field is used in jquery to set the intial field for car model
         self.fields['model']=model=forms.CharField(max_length=100,initial=self.instance.vehicle_model)
+        #preset the region to what is chosen before
         self.fields['region']=forms.ChoiceField(
         label = "region",
         choices = tuple([(reg,reg) for reg in regions]),
         initial = regions[0],
         required = True,
         )
+        #this field is used only to preset the car model for updateview
         self.helper.layout = Layout(
                             form_layout,   
                             Field('model', type='hidden'),)

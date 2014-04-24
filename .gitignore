@@ -5,3 +5,5 @@ notes.txt
 .settings*
 secrets.json
 commit_message.txt
+cmv_project/live/
+single_search.log

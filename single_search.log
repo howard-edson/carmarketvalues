@@ -1,6 +1,6 @@
-2014-04-22 19:07:52,400 /Users/sridhar/Documents/python_workspace/carmarketvalues/cmv_app/views.py:21: DeprecationWarning: django.utils.simplejson is deprecated; use json instead.
+2014-04-22 20:35:08,691 /Users/sridhar/Documents/python_workspace/carmarketvalues/cmv_app/views.py:21: DeprecationWarning: django.utils.simplejson is deprecated; use json instead.
   from django.utils import simplejson
 
-2014-04-22 19:07:52,409 /Users/sridhar/Documents/python_workspace/carmarketvalues/registration/urls.py:13: DeprecationWarning: include('registration.urls') is deprecated; use include('registration.backends.default.urls') instead.
+2014-04-22 20:35:08,704 /Users/sridhar/Documents/python_workspace/carmarketvalues/registration/urls.py:13: DeprecationWarning: include('registration.urls') is deprecated; use include('registration.backends.default.urls') instead.
   DeprecationWarning)
 

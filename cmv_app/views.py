@@ -38,6 +38,7 @@ class PostingsListView(ListView):
     template_name="cmv_app/search_detail.html"
     context_object_name="posts"
     pk=None
+    paginate_by = 5
         
     def get_queryset(self):
         self.pk=self.kwargs.get('pk',None)
