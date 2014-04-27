@@ -3,9 +3,9 @@ from cmv_app.models import Search
 #from .models import UserProfile
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Button, Submit, MultiField, Div, HTML, \
-    Field, Reset
+    Field, Reset, Fieldset, ButtonHolder
 from crispy_forms.bootstrap import FormActions, AppendedText, InlineCheckboxes,\
-    InlineField
+    InlineField, InlineRadios, PrependedText
 from django.core.urlresolvers import reverse
 import datetime
 from cmv_app.shortcuts import MAKES, DynamicChoiceField, regions
@@ -20,7 +20,7 @@ form_layout=Layout(
                 {% endif %}>{{ message }}</p>{% endfor %}{% endif %}
                 '''),
             #Field('vehicle_make', placeholder='Ford', required=True, autofocus=True),
-            'region',
+            'regions',
             'vehicle_make',
             'vehicle_model',
             'extra_keywords',
@@ -28,9 +28,9 @@ form_layout=Layout(
             AppendedText('min_price', '$', active=True),
             'max_year',
             'min_year',
-            'pic_only',
-            'search_title_only',
-            InlineCheckboxes('seller_type'),
+            PrependedText('pic_only',''),
+            PrependedText('search_title_only','',css_class="shift"),
+            InlineRadios('seller_type'),
             Field('submit_button_type', type='hidden'),
         )
 
@@ -69,12 +69,13 @@ class SearchInputForm(forms.ModelForm):
                     widget=forms.Select(attrs={'id':'makes'})
                     )
         
-        self.fields['region']=forms.ChoiceField(
-        label = "region",
-        choices = tuple([(reg,reg) for reg in regions]),
-        initial = 'seattle',
-        required = True,
-                   )
+#         self.fields['region']=forms.ChoiceField(
+#         label = "region",
+#         choices = tuple([(reg,reg) for reg in regions]),
+#         initial = 'seattle',
+#         required = True,
+#                    )
+        #self.fields['seller_type'].widget='RadioSelect'
         
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -87,7 +88,7 @@ class SearchInputForm(forms.ModelForm):
         
     class Meta:
         model = Search
-        exclude = ('user','regions','vehicle_make','vehicle_model')
+        exclude = ('user','vehicle_make','vehicle_model',)
         
     def get_my_choices(self):
         return [(r,r) for r in range(1980,(datetime.datetime.now().year+1))]
@@ -112,7 +113,7 @@ class SearchUpdateForm(SearchInputForm):
     def __init__(self, *args, **kwargs):
         super(SearchUpdateForm, self).__init__(*args, **kwargs)
         self.vehicle_make=self.instance.vehicle_make
-        regions=self.instance.regions.all()
+        #regions=self.instance.regions.all()
         
         self.helper.add_input(Submit('Update', 'update'))
         self.helper.add_input(Button(
@@ -134,16 +135,53 @@ class SearchUpdateForm(SearchInputForm):
         #the model field is used in jquery to set the intial field for car model
         self.fields['model']=model=forms.CharField(max_length=100,initial=self.instance.vehicle_model)
         #preset the region to what is chosen before
-        self.fields['region']=forms.ChoiceField(
-        label = "region",
-        choices = tuple([(reg,reg) for reg in regions]),
-        initial = regions[0],
-        required = True,
-        )
+#         self.fields['region']=forms.ChoiceField(
+#         label = "region",
+#         choices = tuple([(reg,reg) for reg in regions]),
+#         initial = regions[0],
+#         required = True,
+#         )
         #this field is used only to preset the car model for updateview
         self.helper.layout = Layout(
                             form_layout,   
                             Field('model', type='hidden'),)
+        
+
+class SortFieldsForm(forms.Form):
+    Latestyear=forms.BooleanField(label="latest year")
+    LowestPrice=forms.BooleanField(label="lowest price")
+    HighestPrice=forms.BooleanField(label="highest price")
+    Newest_Entry=forms.BooleanField(label="latest date")
+    
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-exampleForm'
+        self.helper.form_class = 'form-inline'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'sort_posting'
+
+        #self.helper.add_input(Submit('submit', 'Submit'))
+        super(SortFieldsForm, self).__init__(*args, **kwargs)
+        
+        self.helper.layout = Layout(
+            #Fieldset(
+            #    'price',
+            #    'LowestPrice',
+            #    'HighestPrice',
+                #'favorite_color',
+                #'favorite_food',
+                #'notes'
+            #),
+            PrependedText('LowestPrice', ''),
+            PrependedText('HighestPrice', ''),
+            #InlineCheckboxes('LowestPrice'),
+            PrependedText('Newest_Entry', ''),
+                PrependedText('Latestyear', ''),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+        )
+    
 
 
 # #not implemented yet

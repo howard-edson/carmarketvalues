@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required as auth
 from django.contrib import admin
-from cmv_app.views import SearchListView, SearchCreateView,\
-    SearchUpdateView, SearchDeleteView, search_report
+from cmv_app.views import SearchCreateView,\
+    SearchUpdateView, SearchDeleteView, search_report, PostingsDetailView
 from cmv_app.views import SearchListView, SearchCreateView,\
     SearchUpdateView, SearchDeleteView, SearchListJson, PostingsListView
 from cmv_app.shortcuts import ajax_required
@@ -23,6 +23,14 @@ urlpatterns=patterns('',
         name="postings_list"),
     #url(r"^(?P<pk>\d+)$", auth(SearchDetailView.as_view()),
     #        name="search_detail"),
+    # ex: /1/
+    url(r"^(?P<pk>\d+)/detail/$", auth(PostingsDetailView.as_view()),
+        name="single_postings_detail"),
+    #url(r"^(?P<pk>\d+)$", auth(SearchDetailView.as_view()),
+    #        name="search_detail"),
+    
+    url(r"^(?P<pk>\d+)/(?P<region>\w+)/$", auth(PostingsListView.as_view()),
+        name="postings_list_regions"),
 
     # ex: update/1
     url(r"^update/(?P<pk>\d+)/$", auth(SearchUpdateView.as_view()),
@@ -42,5 +50,6 @@ urlpatterns=patterns('',
      url(r'get_models/(?P<make>\w+)/$',
          "cmv_app.views.get_makes_json",
          name="get_models_make_json"),
+    )
                      
- )
+                     

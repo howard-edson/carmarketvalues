@@ -1,12 +1,11 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404,\
+    redirect
 from django.views.generic import ListView, DetailView
-#from .models import Link, UserProfile
-#from .forms import UserProfileForm
 from django.contrib.auth import get_user_model
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.core.urlresolvers import reverse, reverse_lazy
 from cmv_app.models import Search, Posting
-from cmv_app.forms import SearchForm
+from cmv_app.forms import SearchForm, SortFieldsForm
 from django.db.models import Avg, Count
 from django.core.urlresolvers import reverse,reverse_lazy
 from cmv_app.models import Search, Region, Posting
@@ -15,11 +14,13 @@ from cmv_app.forms import SearchForm, SearchInputForm, SearchCreateForm,\
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib import messages
-from django.http.response import Http404, HttpResponse
+from django.http.response import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.messages.views import SuccessMessageMixin
 from cmv_app.shortcuts import populate_one_search, MODELS_MAKE
 from django.utils import simplejson
 from django.core.exceptions import PermissionDenied
+
+
 
 class SearchListView(ListView):
     """
@@ -33,6 +34,10 @@ class SearchListView(ListView):
         return Search.objects.filter(user=self.request.user.id)
     
 
+class PostingsDetailView(DetailView):
+    model=Posting
+    context_object_name='post'
+    
 class PostingsListView(ListView):
     model=Posting
     template_name="cmv_app/search_detail.html"
@@ -40,9 +45,12 @@ class PostingsListView(ListView):
     pk=None
     #paginate_by = 5
         
-    def get_queryset(self):
+    def get_queryset(self):   
         self.pk=self.kwargs.get('pk',None)
         posts=Posting.objects.filter(search__pk=self.pk)
+        region=self.kwargs.get('region',None)
+        if region:
+            posts=posts.filter(region__name=region)
         return posts
     
     def get_context_data(self,**kwargs):
@@ -51,6 +59,9 @@ class PostingsListView(ListView):
         context['currentuser']=requested_search.user
         context['search_pk']=self.pk
         context['search']=requested_search
+        form=SortFieldsForm()
+        context['form']=form
+        context['region']=self.kwargs.get('region',None)
         return context
         
 class SearchCreateView(CreateView):
@@ -64,21 +75,20 @@ class SearchCreateView(CreateView):
     template_name = 'cmv_app/search_form.html'
 
     def form_valid(self, form):
-        f = form.save(commit=False)
-        region=self.request.POST['region']
         vehicle_make=self.request.POST['vehicle_make']
         vehicle_model=self.request.POST['vehicle_model']
+        f = form.save(commit=False)
         f.user = self.request.user
         f.vehicle_make=vehicle_make
         f.vehicle_model=vehicle_model
         f.save()
-        f.regions.add(Region.objects.get(name=region))
+        f.regions=form.cleaned_data['regions']
+        f.save()
         
         if form.cleaned_data['submit_button_type'] == 'submit_and_add':
             self.success_url = reverse_lazy("search_create")
         messages.add_message(self.request, messages.SUCCESS,
                                  "search saved succcessfully")
-        #populate_one_search(search=Search.objects.get(pk=f.id))
         populate_one_search(f)
         return super(SearchCreateView, self).form_valid(form)
     
@@ -93,40 +103,24 @@ class SearchUpdateView(SuccessMessageMixin,UpdateView):
     
     success_url = reverse_lazy("searchhome")
     
-#     def get_form_kwargs(self,**kwargs):
-#         """ Add the Request object to the form's keyword arguments. """
-#         kwargs = super(SearchUpdateView, self).get_form_kwargs(**kwargs)
-#         instance=kwargs.get('instance',None)
-#         print instance.vehicle_make
-#         kwargs.update({'instance': instance})
-#         print("here")
-#         return kwargs
-    
     def form_valid(self, form):
         f = form.save(commit=False)
-        region=self.request.POST['region']
         vehicle_make=self.request.POST['vehicle_make']
         vehicle_model=self.request.POST['vehicle_model']
         f.user = self.request.user
         f.vehicle_make=vehicle_make
         f.vehicle_model=vehicle_model
+        f.regions=form.cleaned_data['regions']
         Posting.objects.filter(search__pk=f.id).delete()
         f.save()
-        f.regions.add(Region.objects.get(name=region))
-        print f
-        print type(f)
-        #populate_one_search(search=Search.objects.get(pk=f.id))
-        
         populate_one_search(f)
         return super(SearchUpdateView, self).form_valid(form)
     
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(SearchUpdateView, self).get_object()
-        #obj= Search.objects.get(pk=self.request.GET.get('pk'))
         if not obj.user == self.request.user:
             raise PermissionDenied
-        print "obj is", obj
         return obj
 
 class SearchDeleteView(DeleteView):
@@ -176,27 +170,46 @@ class SearchListJson(BaseDatatableView):
     def render_column(self, row, column):
         url_edit=static('images/icons/icon_changelink.gif')
         url_delete=static('images/icons/icon_deletelink.gif')
-
+        
+        
         if column == 'title':
-             value = '{0}=>{1}:{2}-{3}'.format(row.vehicle_make,row.vehicle_model,
+            regions= row.regions.all() 
+            if len(regions)==1:
+                 value = '{0} => {1}:{2}-{3}-{4}'.format(row.vehicle_make,row.vehicle_model,
+                                           row.max_year,row.min_year,regions[0].name.title())
+                 edit_url = reverse('postings_list_regions', 
+                                    kwargs={'pk':row.id,'region':regions[0]})
+                 return self.get_value_cell_style(edit_url, value,'red')
+            else:
+                value = '{0} => {1}:{2}-{3}'.format(row.vehicle_make,row.vehicle_model,
                                            row.max_year,row.min_year)
-             edit_url = reverse('postings_list', args=(row.id,))
-             return self.get_value_cell_style(edit_url, value,'red')
-
+                reg=""
+                for link in regions:
+                    url=reverse('postings_list_regions',
+                                kwargs={'pk':row.id,'region':link.name})
+                    reg+='''<li><a href="%s">%s</a></li>'''%(url,link.name.title())
+                dropdownHtml=  '''
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    &nbsp;%s <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu regions-dropdown">
+                    %s </ul>'''%(value,reg)            
+                return dropdownHtml
+        
         if column == 'max_price':
             return '%s' %row.max_price
         elif column == 'min_price':
-             return '%s' %row.min_price
+            return '%s' %row.min_price
         elif column == 'created':
-             return row.created.strftime('%m/%d/%Y')
+            return row.created.strftime('%m/%d/%Y')
         elif column == 'actions':
-             edit_link = """<a href='%s'><img src='%s'></a>""" %(\
+            edit_link = """<a href='%s'><img src='%s'></a>""" %(\
                  reverse('search_update', args=(row.id,)),url_edit)
-             delete_link = """<a href='%s'><img src='%s'></a>""" %(\
+            delete_link = """<a href='%s'><img src='%s'></a>""" %(\
                  reverse('search_delete', args=(row.id,)),url_delete)
-             return '<center>%s&nbsp;%s</center>' % (edit_link, delete_link)
+            return '<center>%s&nbsp;%s</center>' % (edit_link, delete_link)
         else:
-             return super(SearchListJson, self).render_column(row, column)
+            return super(SearchListJson, self).render_column(row, column)
 
     def get_value_cell_style(self, url, value, color=None):
         style = '''<center><a href="%s">%s</a></center>''' % (url, value)
@@ -219,33 +232,7 @@ def get_makes_json(request,make):
     models=MODELS_MAKE.get(make,None)
     if models:
         results=tuple(models)
-        #print results
         obj=simplejson.dumps(results)
-        #print obj
         return HttpResponse(obj, content_type="application/json")
-         
+    
 
-#Not implemented
-# class UserProfileDetailView(DetailView):
-#     """
-#     userprofile view - not implemented yet
-#     """
-#     model = get_user_model()
-#     slug_field = "username"
-#     template_name = "user_detail.html"
-# 
-#     def get_object(self, queryset=None):
-#         user = super(UserProfileDetailView, self).get_object(queryset)
-#         UserProfile.objects.get_or_create(user=user)
-#         return user
-# 
-# class UserProfileEditView(UpdateView):
-#     model = UserProfile
-#     form_class = UserProfileForm
-#     template_name = "edit_profile.html"
-# 
-#     def get_object(self, queryset=None):
-#         return UserProfile.objects.get_or_create(user=self.request.user)[0]
-# 
-#     def get_success_url(self):
-#         return reverse("profile", kwargs={"slug": self.request.user})

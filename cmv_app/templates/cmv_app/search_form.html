@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
 {% block customcss %}
 <style>
                 body {
                 	margin-top: 100px;
                      margin-left:100px;
                       margin-right:100px;
-                      margin-bottom: 70px; 
+                      margin-bottom: 70px;
+                      /*background: rgba(255,255,255,0.8) url( "{% static 'css/spinner.gif' %}") no-repeat 50%;*/
                   }
+                  
             </style>
 {% endblock %}
 

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% block customcss %}
+<style>
+                body {margin-top: 100px;
+                      margin-bottom: 70px; }
+
+               .container .jumbotron {
+                  margin-top: 0;
+                  background-color: rgba(0, 0, 0, 0.21);
+                  color:black;
+                }
+
+                .container .jumbotron a{
+                  color:rgb(177, 48, 69);
+                }
+
+                p a span.glyphicon.glyphicon-star-empty {
+                  color:#B939A0;
+                  font-size: 20px;
+                }
+
+                .tab {
+                  margin-left: 40px;
+                }
+
+                p a span.glyphicon.glyphicon-star-empty {
+                  color:#B939A0;
+                  font-size: 20px;
+                }
+
+            </style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+      <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+          <p class="pull-right visible-xs">
+            <h3><center>{{ post.title }} <a href="/search/create/"><span class="glyphicon glyphicon-star-empty"></span></a></center></h3>
+          </p>
+          <div class="jumbotron">
+            <p>Region: <b>{{ post.region }}</b></p>
+            <p>Year:<b> {{ post.vehicle_year }}</b></p>
+            <p>Selling Price:<b>{{ post.vehicle_price }}</b></p>
+            <p class="tab">{{ post.body }}</p>
+            <p><a href="{{ post.posting_url }}">click here</a> to see more details</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

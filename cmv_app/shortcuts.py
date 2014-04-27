@@ -130,12 +130,11 @@ def populate_one_search(search):
                     filemode='w',  # overwrite log file each run 
                     level=logging.INFO)
     
-    print "called here"
     logging.info('search model is %s' %search)
-    print search.regions.all()
     for region in search.regions.all():
         logging.info('region: %s' %region)
         search_url = make_url(search, region)
+        print search_url
         if search_url:
             logging.info('URL: %s' % search_url)
         else:

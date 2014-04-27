@@ -1,7 +1,12 @@
 body {
   overflow-x:hidden;
-  background: url('retina_dust.png')
+  /*background: url('retina_dust.png')*/
 }
+
+ul.dropdown-menu.regions-dropdown {
+  position: relative;
+  /*top:10%;*/
+} 
 
 * {
   margin: 0;
@@ -107,8 +112,8 @@ th {
 /*.form-group.required:not(input[type='checkbox']) .control-label:after, 
 .form-group.required input[type='checkbox'] .text:after { /* change .text in whatever class of the text after the checkbox has 
    content:"*";
-   color:red;*/
-} 
+   color:red;
+} */
 
 .asteriskField {
   color: red;
