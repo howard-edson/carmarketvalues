@@ -25,12 +25,42 @@
                   margin-left: 40px;
                 }
 
-                p a span.glyphicon.glyphicon-star-empty {
-                  color:#B939A0;
-                  font-size: 20px;
-                }
-
             </style>
+
+            <script>
+$(document).ready(function() {
+// ajax for bookmark 
+$('.bookmark').click(function() {
+     var id= $(this).attr('id');
+     data={
+          'id':id,
+          'csrfmiddlewaretoken':'{{ csrf_token }}',
+          };
+     var classie=$(this).children(":first").attr("class");
+      $.ajax({
+        url: '/post/bookmark/',
+        cache:'false',
+        dataType:'json',
+        type:'POST',
+        data:data,
+        success: function(data){
+          if (data['success']) {
+              $('.bookmark').children(":first").attr("class", 'glyphicon glyphicon-star');
+          }
+          else {
+              $('.bookmark').children(":first").attr("class", 'glyphicon glyphicon-star-empty');
+          }
+        }, 
+        error: function(error){
+          alert('error; '+ eval(error));
+        }
+      });
+      return false;
+  });
+ });
+//end for ajax bookmark
+
+</script>
 
 {% endblock %}
 
@@ -40,7 +70,13 @@
       <div class="row row-offcanvas row-offcanvas-right">
         <div class="col-xs-12 col-sm-9">
           <p class="pull-right visible-xs">
-            <h3><center>{{ post.title }} <a href="/search/create/"><span class="glyphicon glyphicon-star-empty"></span></a></center></h3>
+            <h3><center>{{ post.title }} 
+              <button type="button" class="bookmark" id="{{ post.pk }}" > 
+                <span class="{% if not bookmarks %}
+                  glyphicon glyphicon-star-empty {% else %} glyphicon glyphicon-star {% endif %}"></span>
+              </button>
+              </center>
+            </h3>
           </p>
           <div class="jumbotron">
             <p>Region: <b>{{ post.region }}</b></p>

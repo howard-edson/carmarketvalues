@@ -16,33 +16,4 @@
 
 {% block content %}
 <div class="container">{% crispy form %}</div>
-<script>
-
-$('select[name=vehicle_make]').change(function(){
-    
-        make = $(this).val();
-        if (make == 'NA') {
-            $("select[name=vehicle_model]").html("<option value='NA'>Select a model</option>");
-            $("select[name=vehicle_model]").attr('disabled', true);
-         }
-         else {
-        request_url = '/search/get_models/' + make +'/';
-        $.ajax({
-            url: request_url,
-            dataType: 'json',
-            type: "GET", 
-            success: function(data){
-            	$('select[name=vehicle_model]').find('option').remove().end();
-            	$('select[name=vehicle_model]').append('<option value="NA"> --------------- SELECT MAKE ------------- </option>');
-                $.each(data, function(key, value){
-                    $('select[name=vehicle_model]').append('<option value="' + value + '">' + value +'</option>');
-                    $("select[name=vehicle_model] option:first").attr('selected', 'selected');
-                                     $("select[name=vehicle_model]").attr('disabled', false);
-                });
-        }
-        
-    });
-    }
-    });
-</script>
 {% endblock %}

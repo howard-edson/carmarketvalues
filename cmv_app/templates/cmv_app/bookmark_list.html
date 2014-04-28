@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load crispy_forms_tags %}
+{% block customcss %}
+<style>
+                body {margin-top: 100px;
+                      margin-bottom: 70px; }
+
+               .container .jumbotron {
+                  margin-top: 0;
+                  background-color: rgba(0, 0, 0, 0.21);
+                  color:black;
+                }
+
+                .container .jumbotron a{
+                  color:rgb(177, 48, 69);
+                }
+
+                .region {
+                  color:rgb(53, 29, 228);
+                }
+
+</style>
+<script>
+$(document).ready(function() {
+
+
+// ajax for bookmark 
+$('.bookmark').click(function() {
+     var id= $(this).attr('id');
+     data={
+          'id':id,
+          'csrfmiddlewaretoken':'{{ csrf_token }}',
+          };
+     var classie=$(this).children(":first").attr("class");
+      $.ajax({
+        url: '/post/bookmark/',
+        cache:'false',
+        dataType:'json',
+        type:'POST',
+        data:data,
+        success: function(data){
+          if (data['success']) {
+              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star');
+          }
+          else {
+              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star-empty');
+          }
+        }, 
+        error: function(error){
+          alert('error; '+ eval(error));
+        }
+      });
+      return false;
+  });
+ });
+//end for ajax bookmark
+
+</script>
+ 
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+      <div class="row row-offcanvas row-offcanvas-right">
+    <div class="row">
+      {% if bookmarks %}
+      {% for bm in bookmarks %}
+
+            <div class="col-6 col-sm-6 col-lg-4">
+              <h3>{{ bm.post.title }} </h3>
+              <p><small>{{ bm.post.body|lower|truncatewords:"20" }} </small></p>
+              <p>
+                <a class="btn btn-default" href="{% url 'single_postings_detail' pk=bm.post.pk %}" role="button">View details &raquo;</a>
+                <button type="button" class="bookmark" id="{{ bm.post.pk }}" ><span class= "glyphicon glyphicon-star"></span></button>
+              </p>
+
+            </div><!--/span-->
+      {% endfor %}
+      {% else %}
+          <p><h1>No posts to show</h1></p>
+      {% endif %}
+      </div> 
+    </div>
+    </div>
+{% endblock %}

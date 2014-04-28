@@ -125,6 +125,22 @@ th {
   margin-top:50px;
 }
 
+button span.glyphicon.glyphicon-star-empty {
+color:#B939A0;
+font-size: 20px;
+ }
+
+button span.glyphicon.glyphicon-star {
+  color:#B939A0;
+  font-size: 20px;
+ }
+
+ button.bookmark {
+  border:none;
+  background: none;
+  padding: 0;
+ }
+
 
 
 

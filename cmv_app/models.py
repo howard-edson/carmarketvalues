@@ -82,3 +82,11 @@ class Posting(models.Model):
 
     class Meta:
         select_on_save = True
+        
+class BookMark(models.Model):
+    """
+    A Bookmark is assigned to each posting a user chooses to keep a copy 
+    """
+    
+    user=models.ForeignKey(User)
+    post=models.ForeignKey(Posting)

@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth import get_user_model
 from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.core.urlresolvers import reverse, reverse_lazy
-from cmv_app.models import Search, Posting
+from cmv_app.models import Search, Posting, BookMark
 from cmv_app.forms import SearchForm, SortFieldsForm
 from django.db.models import Avg, Count
 from django.core.urlresolvers import reverse,reverse_lazy
@@ -27,23 +27,40 @@ class SearchListView(ListView):
     displays the saved searches of a user in a list view    
     """
     model = Search
-    #queryset = Search.objects.filter(user=request.user)
     paginate_by = 5
     
     def get_queryset(self):
         return Search.objects.filter(user=self.request.user.id)
+    
+    
+
+class BookMarkListView(ListView):
+      
+    model=BookMark
+    template_name="cmv_app/bookmark_list.html"
+    context_object_name='bookmarks'
+      
+      
+    def get_queryset(self):
+        return BookMark.objects.filter(user=self.request.user.id)
     
 
 class PostingsDetailView(DetailView):
     model=Posting
     context_object_name='post'
     
+    def get_context_data(self,**kwargs):
+        context=super(DetailView,self).get_context_data(**kwargs)
+        if self.request.user.is_authenticated():
+            bookmarks=BookMark.objects.filter(post=self.object)
+            context["bookmarks"] = bookmarks
+        return context
+    
 class PostingsListView(ListView):
     model=Posting
     template_name="cmv_app/search_detail.html"
     context_object_name="posts"
     pk=None
-    #paginate_by = 5
         
     def get_queryset(self):   
         self.pk=self.kwargs.get('pk',None)
@@ -55,13 +72,21 @@ class PostingsListView(ListView):
     
     def get_context_data(self,**kwargs):
         context=super(PostingsListView,self).get_context_data(**kwargs)
-        requested_search=Search.objects.get(pk=self.pk)
-        context['currentuser']=requested_search.user
-        context['search_pk']=self.pk
-        context['search']=requested_search
-        form=SortFieldsForm()
-        context['form']=form
-        context['region']=self.kwargs.get('region',None)
+        if self.request.user.is_authenticated():
+            requested_search=Search.objects.get(pk=self.pk)
+            context['currentuser']=requested_search.user
+            context['search_pk']=self.pk
+            context['search']=requested_search
+            form=SortFieldsForm()
+            context['form']=form
+            context['region']=self.kwargs.get('region',None)
+        
+            bookmarks = BookMark.objects.filter(user=self.request.user)
+            posts_in_page = [posting.id for posting in context["posts"]]
+            bookmarks = bookmarks.filter(post_id__in=posts_in_page)
+            bookmarks = bookmarks.values_list('post_id', flat=True)
+            print bookmarks
+            context["bookmarks"] = bookmarks
         return context
         
 class SearchCreateView(CreateView):
@@ -234,5 +259,26 @@ def get_makes_json(request,make):
         results=tuple(models)
         obj=simplejson.dumps(results)
         return HttpResponse(obj, content_type="application/json")
+    
+    
+def bookmark_post(request): 
+    if not request.is_ajax():
+        return HttpResponse("you cant access here")
+    post_id=request.POST['id']
+    ret = {"success": 0}
+    try:
+        bookmark = BookMark.objects.get(post__pk=post_id)
+    except BookMark.DoesNotExist:
+        BookMark.objects.create(user=request.user,post=Posting.objects.get(pk=post_id))
+        #success if new bookmark is created
+        ret['success']=1
+    else:
+        BookMark.delete(bookmark)
+    return HttpResponse(simplejson.dumps(ret), content_type="application/json")
+
+    
+    
+    
+    
     
 

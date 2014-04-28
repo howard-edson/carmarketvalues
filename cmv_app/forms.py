@@ -19,7 +19,6 @@ form_layout=Layout(
                 class="alert alert-{{ message.tags }}"
                 {% endif %}>{{ message }}</p>{% endfor %}{% endif %}
                 '''),
-            #Field('vehicle_make', placeholder='Ford', required=True, autofocus=True),
             'regions',
             'vehicle_make',
             'vehicle_model',
@@ -68,14 +67,7 @@ class SearchInputForm(forms.ModelForm):
                     choices=MAKES, 
                     widget=forms.Select(attrs={'id':'makes'})
                     )
-        
-#         self.fields['region']=forms.ChoiceField(
-#         label = "region",
-#         choices = tuple([(reg,reg) for reg in regions]),
-#         initial = 'seattle',
-#         required = True,
-#                    )
-        #self.fields['seller_type'].widget='RadioSelect'
+
         
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -123,24 +115,12 @@ class SearchUpdateForm(SearchInputForm):
         self.helper.add_input(Button('delete', 'Delete',
                                      onclick='location.href="%s";' % delete_url,
                                      css_class='btn-danger pull-right'))
-#         self.fields['vehicle_make'] = forms.ChoiceField(
-#                     initial=self.vehicle_make,
-#                     label="Car make",
-#                     choices=MAKES,
-#                     widget=forms.Select(attrs={'id':'makes'})
-#                     )
+
         #override the initial value of vehicle_make
         self.fields['vehicle_make'].initial = self.vehicle_make
                     
         #the model field is used in jquery to set the intial field for car model
         self.fields['model']=model=forms.CharField(max_length=100,initial=self.instance.vehicle_model)
-        #preset the region to what is chosen before
-#         self.fields['region']=forms.ChoiceField(
-#         label = "region",
-#         choices = tuple([(reg,reg) for reg in regions]),
-#         initial = regions[0],
-#         required = True,
-#         )
         #this field is used only to preset the car model for updateview
         self.helper.layout = Layout(
                             form_layout,   
@@ -160,18 +140,9 @@ class SortFieldsForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.form_action = 'sort_posting'
 
-        #self.helper.add_input(Submit('submit', 'Submit'))
         super(SortFieldsForm, self).__init__(*args, **kwargs)
         
         self.helper.layout = Layout(
-            #Fieldset(
-            #    'price',
-            #    'LowestPrice',
-            #    'HighestPrice',
-                #'favorite_color',
-                #'favorite_food',
-                #'notes'
-            #),
             PrependedText('LowestPrice', ''),
             PrependedText('HighestPrice', ''),
             #InlineCheckboxes('LowestPrice'),
@@ -184,10 +155,4 @@ class SortFieldsForm(forms.Form):
     
 
 
-# #not implemented yet
-# class UserProfileForm(forms.ModelForm):
-#     class Meta:
-#         model = UserProfile
-#         exclude = ("user",)
-    
         

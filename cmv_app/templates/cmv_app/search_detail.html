@@ -16,11 +16,6 @@
                   color:rgb(177, 48, 69);
                 }
 
-                p a span.glyphicon.glyphicon-star-empty {
-                  color:#B939A0;
-                  font-size: 20px;
-                }
-
                 .region {
                   color:rgb(53, 29, 228);
                 }
@@ -35,7 +30,44 @@
 
 
 
-            </style>
+</style>
+<script>
+$(document).ready(function() {
+
+
+// ajax for bookmark 
+$('.bookmark').click(function() {
+     var id= $(this).attr('id');
+     data={
+          'id':id,
+          'csrfmiddlewaretoken':'{{ csrf_token }}',
+          };
+     var classie=$(this).children(":first").attr("class");
+      $.ajax({
+        url: '/post/bookmark/',
+        cache:'false',
+        dataType:'json',
+        type:'POST',
+        data:data,
+        success: function(data){
+          if (data['success']) {
+              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star');
+          }
+          else {
+              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star-empty');
+          }
+        }, 
+        error: function(error){
+          alert('error; '+ eval(error));
+        }
+      });
+      return false;
+  });
+ });
+//end for ajax bookmark
+
+</script>
+ 
 
 {% endblock %}
 
@@ -70,7 +102,8 @@
               <p><small>{{ post.body|lower|truncatewords:"20" }} </small></p>
               <p>
                 <a class="btn btn-default" href="{% url 'single_postings_detail' pk=post.pk %}" role="button">View details &raquo;</a>
-                <a href="/search/create/"><span class="glyphicon glyphicon-star-empty"></span></a>
+                <button type="button" class="bookmark" id="{{ post.pk }}" ><span class="{% if post.pk not in bookmarks %}
+                  glyphicon glyphicon-star-empty {% else %} glyphicon glyphicon-star {% endif %}"></span></button>
               </p>
 
             </div><!--/span-->
