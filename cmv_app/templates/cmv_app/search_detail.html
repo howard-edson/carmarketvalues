@@ -21,7 +21,15 @@
                 }
 
 
-                .dropdown-submenu{position:relative;}
+              /*  .dropdown-submenu{position:relative;}
+.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+.dropdown-submenu:hover>.dropdown-menu{display:block;}
+.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;} */
+
+
+.dropdown-submenu{position:relative;}
 .dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
 .dropdown-submenu:hover>.dropdown-menu{display:block;}
 .dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
@@ -112,14 +120,14 @@ $('.bookmark').click(function() {
     </div>
       <div class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
           <div id="sidebar" class="sidebar-nav span3">
-            <ul class="nav nav-tabs nav-stacked">
+            <div class="pull-left">
               <ul class="dropdown-menu" style="display: block; position: static; margin-bottom: 5px; *width: 180px;">  
             {% for ssearch in user.search_set.all %}
-            {% if not forloop.first and not forloop.last %}
+            {% if not forloop.first %}
             <li class="divider"></li>
             {% endif %}
              {% if ssearch.regions.count == 1 %}
-               <li class="nav-menu {% if forloop.first %} active {% endif %}"><a href="{% url 'postings_list' pk=ssearch.pk %}">{{ ssearch }}({{ ssearch.regions.all |first|capfirst }})</a></li>
+               <li class="{% if forloop.first %} active {% endif %}"><a href="{% url 'postings_list' pk=ssearch.pk %}">{{ ssearch }}({{ ssearch.regions.all |first|capfirst }})</a></li>
              {% else %}
               <li class="dropdown-submenu {% if forloop.first %} active {% endif %}"> <a tabindex="-1" href="#">{{ ssearch }}</a>
         <ul class="dropdown-menu">
@@ -131,7 +139,7 @@ $('.bookmark').click(function() {
             {% endif %}
             {% endfor %}
           </ul>
-        </ul>
+        </div>
       </div>
             
           
