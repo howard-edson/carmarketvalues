@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from cmv_app.views import SearchListView, bookmark_post, BookMarkListView
+from cmv_app.views import SearchListView, bookmark_post, BookMarkListView,\
+    unbookmark
 from django.shortcuts import redirect
 from django.views.generic.base import RedirectView
 from django.core.urlresolvers import reverse_lazy
@@ -30,5 +31,6 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', view=auth(SearchListView.as_view()), name='searchhome'),
     url(r'^post/bookmark/$', bookmark_post, name='bookmark_post'),
     url(r'^mybookmarks/$', auth(BookMarkListView.as_view()), name='bookmark_listView'),
+    url(r'post/unbookmark/$',unbookmark,name="unbookmark_post"),
    
 )

@@ -3,157 +3,139 @@
 {% load crispy_forms_tags %}
 {% block customcss %}
 <style>
-                body {margin-top: 100px;
-                      margin-bottom: 70px; }
 
-               .container .jumbotron {
-                  margin-top: 0;
-                  background-color: rgba(0, 0, 0, 0.21);
-                  color:black;
-                }
+  body { 
+    margin-top: 100px;
+    margin-bottom: 70px;
+    }
 
-                .container .jumbotron a{
-                  color:rgb(177, 48, 69);
-                }
+  .container .jumbotron {
+     margin-top: 0;
+    background-color: rgba(0, 0, 0, 0.21);
+    color:black;
+  }
 
-                .region {
-                  color:rgb(53, 29, 228);
-                }
+   .container .jumbotron a{
+     color:rgb(177, 48, 69);
+    }
 
-
-              /*  .dropdown-submenu{position:relative;}
-.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
-.dropdown-submenu:hover>.dropdown-menu{display:block;}
-.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
-.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
-.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;} */
-
+     .region {
+      color:rgb(53, 29, 228);
+    }
 
 .dropdown-submenu{position:relative;}
-.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+.dropdown-submenu>.dropdown-menu{
+  top:0;left:100%;margin-top:-6px;margin-left:-1px;
+  -webkit-border-radius:0 6px 6px 6px;
+  -moz-border-radius:0 6px 6px 6px;
+  border-radius:0 6px 6px 6px;}
 .dropdown-submenu:hover>.dropdown-menu{display:block;}
-.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu>a:after{display:block;content:" ";
+float:right;width:0;height:0;border-color:transparent;
+border-style:solid;border-width:5px 0 5px 5px;
+border-left-color:#cccccc;
+margin-top:5px;
+margin-right:-10px;}
 .dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
-.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{
+  left:-100%;margin-left:10px;
+  -webkit-border-radius:6px 0 6px 6px;
+  -moz-border-radius:6px 0 6px 6px;
+  border-radius:6px 0 6px 6px;}
 
 
 
 </style>
-<script>
-$(document).ready(function() {
-
-
-// ajax for bookmark 
-$('.bookmark').click(function() {
-     var id= $(this).attr('id');
-     data={
-          'id':id,
-          'csrfmiddlewaretoken':'{{ csrf_token }}',
-          };
-     var classie=$(this).children(":first").attr("class");
-      $.ajax({
-        url: '/post/bookmark/',
-        cache:'false',
-        dataType:'json',
-        type:'POST',
-        data:data,
-        success: function(data){
-          if (data['success']) {
-              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star');
-          }
-          else {
-              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star-empty');
-          }
-        }, 
-        error: function(error){
-          alert('error; '+ eval(error));
-        }
-      });
-      return false;
-  });
- });
-//end for ajax bookmark
-
-</script>
- 
-
 {% endblock %}
 
 {% block content %}
 
 {% if currentuser == user %}
 <div class="container">
-      <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-9">
-          <p class="pull-right visible-xs">
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-          </p>
-          <div class="jumbotron">
-            <h2><center>Search results for {{ search }} </center></h2>
-            <h3 class="region"><center>{{ region|capfirst }}</center></h3>
-            <center>
-    <a href="{% url 'search_update' pk=search_pk %}">Edit</a> | 
-  <a href="{% url 'search_delete' pk=search_pk %}">Delete</a> |
-  <a href="{% url 'search_report' pk=search_pk %}">Report</a>
-  </center>
-
-  
-{% crispy form %}
-</div>
-          
-    <div class="row">
-      {% if posts %}
-      {% for post in posts %}
-
-            <div class="col-6 col-sm-6 col-lg-4">
-              <h3>{{ post.title }} </h3>
-              <p><small>{{ post.body|lower|truncatewords:"20" }} </small></p>
-              <p>
-                <a class="btn btn-default" href="{% url 'single_postings_detail' pk=post.pk %}" role="button">View details &raquo;</a>
-                <button type="button" class="bookmark" id="{{ post.pk }}" ><span class="{% if post.pk not in bookmarks %}
-                  glyphicon glyphicon-star-empty {% else %} glyphicon glyphicon-star {% endif %}"></span></button>
-              </p>
-
-            </div><!--/span-->
-      {% endfor %}
+  <div class="row row-offcanvas row-offcanvas-right">
+    <div class="col-xs-12 col-sm-9">
+      <p class="pull-right visible-xs">
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+      </p>
+      <div class="jumbotron">
+        <h2>
+          <center>Search results for {{ search }}</center>
+        </h2>
+        <h3 class="region">
+          <center>{{ region|capfirst }}</center>
+        </h3>
+        <center>
+          <a href="{% url 'search_update' pk=search_pk %}">Edit</a>
+          |
+          <a href="{% url 'search_delete' pk=search_pk %}">Delete</a>
+          |
+          <a href="{% url 'search_report' pk=search_pk %}">Report</a>
+        </center>
+        {% crispy form %}
       </div>
+
+      <div class="row">
+        {% if posts %}
+      {% for post in posts %}
+        <div class="col-6 col-sm-6 col-lg-4">
+          <h3>{{ post.title }}</h3>
+          <p>
+            <small>{{ post.body|lower|truncatewords:"20" }}</small>
+          </p>
+          <p>
+            <a class="btn btn-default" href="{% url 'single_postings_detail' pk=post.pk %}" role="button">View details &raquo;</a>
+            <button type="button" class="btn bookmark" id="{{ post.pk }}" >
+              <span class="{% if post.pk not in bookmarks %}
+                  glyphicon glyphicon-star-empty {% else %} glyphicon glyphicon-star {% endif %}"></span>
+            </button>
+          </p>
+
+        </div>
+        <!--/span-->{% endfor %}</div>
     </div>
-      <div class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
-          <div id="sidebar" class="sidebar-nav span3">
-            <div class="pull-left">
-              <ul class="dropdown-menu" style="display: block; position: static; margin-bottom: 5px; *width: 180px;">  
+    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+      <div id="sidebar" class="sidebar-nav span3">
+        <div class="pull-left">
+          <ul class="dropdown-menu" style="display: block; position: static; margin-bottom: 5px; *width: 180px;">
             {% for ssearch in user.search_set.all %}
             {% if not forloop.first %}
             <li class="divider"></li>
             {% endif %}
              {% if ssearch.regions.count == 1 %}
-               <li class="{% if forloop.first %} active {% endif %}"><a href="{% url 'postings_list' pk=ssearch.pk %}">{{ ssearch }}({{ ssearch.regions.all |first|capfirst }})</a></li>
-             {% else %}
-              <li class="dropdown-submenu {% if forloop.first %} active {% endif %}"> <a tabindex="-1" href="#">{{ ssearch }}</a>
-        <ul class="dropdown-menu">
-          {% for region in ssearch.regions.all %}
-                <li><a href="{% url 'postings_list_regions' pk=ssearch.pk region=region.name %}">{{ region.name }}</a></li>
+            <li class="{% if forloop.first %} active {% endif %}">
+              <a href="{% url 'postings_list' pk=ssearch.pk %}">{{ ssearch }}({{ ssearch.regions.all |first|capfirst }})</a>
+            </li>
+            {% else %}
+            <li class="dropdown-submenu {% if forloop.first %} active {% endif %}">
+              <a tabindex="-1" href="#">{{ ssearch }}</a>
+              <ul class="dropdown-menu">
+                {% for region in ssearch.regions.all %}
+                <li>
+                  <a href="{% url 'postings_list_regions' pk=ssearch.pk region=region.name %}">{{ region.name }}</a>
+                </li>
                 {% endfor %}
-        </ul>
-      </li>
+              </ul>
+            </li>
             {% endif %}
             {% endfor %}
           </ul>
         </div>
       </div>
-            
-          
-        </div><!--/span-->
-      </div><!--/row-->
-      {% else %}
-          <p><h1>No posts to show</h1></p>
-      {% endif %}
-    </div>
 
-      
+    </div>
+    <!--/span--> </div>
+  <!--/row-->
+  {% else %}
+  <p>
+    <h1>No posts to show</h1>
+  </p>
+  {% endif %}
+</div>
 {% else %}
 <div class="jumbotron" style="width: 800px; margin:0 auto" >
-  <p><h1>You do not have priveleges to view this post </h1></p>
+  <p>
+    <h1>You do not have priveleges to view this post</h1>
+  </p>
 </div>
 {% endif %}
 

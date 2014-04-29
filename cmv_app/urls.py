@@ -50,6 +50,7 @@ urlpatterns=patterns('',
      url(r'get_models/(?P<make>\w+)/$',
          "cmv_app.views.get_makes_json",
          name="get_models_make_json"),
+                     
     )
                      
                      

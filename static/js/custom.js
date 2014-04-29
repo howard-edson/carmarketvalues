@@ -70,6 +70,36 @@ if (make && make != 'NA') {
     });
     }
 
+    // ajax for bookmark 
+$('.btn.bookmark').click(function() {
+     var id= $(this).attr('id');
+     data={
+          'id':id,
+          'csrfmiddlewaretoken':csrf_token,
+          };
+     var classie=$(this).children(":first").attr("class");
+      $.ajax({
+        url: '/post/bookmark/',
+        cache:'false',
+        dataType:'json',
+        type:'POST',
+        data:data,
+        success: function(data){
+          if (data['success']) {
+              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star');
+          }
+          else {
+              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star-empty');
+          }
+        }, 
+        error: function(error){
+          alert('error; '+ eval(error));
+        }
+      });
+      return false;
+  });
+//end for ajax bookmark
+
 
 
 });
