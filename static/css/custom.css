@@ -139,11 +139,24 @@ button span.glyphicon.glyphicon-star {
   border:none;
   background: none;
   padding: 0;
- }
+  position: relative;
+  top:2px;
+ } 
+
+ 
+/* .btn.bookmark .glyphicon {
+  border:none;
+  background: none;
+  padding:0;
+  line-height: inherit; 
+  vertical-align: middle;
+}  */
 
  #starry {
 color: #B939A0;
 font-size: 20px;
+float: left;
+margin: -2px 3px 0 0;
 }
 
 

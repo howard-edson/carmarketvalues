@@ -59,13 +59,18 @@
       <div class="jumbotron">
 		<div class="container">
           <h1>CarMarketValues</h1>
-          <p class="lead">Welcome to Carmarketvalues.com.
+          <p class="lead">Welcome to Carmarketvalues.com. 
+            {% if user.is_authenticated %}
+               Browse through the profiles to get latest updates on your dream cars
+            {% else %}
+
           Register to get the latest updates on your dream cars</p>
             <p><a class="btn btn-lg btn-primary" 
 				  href="{% url 'registration_register' %}">Register</a> 
 			  &nbsp;
               <a class="btn btn-lg btn-success" 
 				  href="{% url 'login' %}">Sign in</a>
+          {% endif %}
             </p>
 		</div> <!-- /.container -->
 	  </div> <!-- /.jumbotron -->

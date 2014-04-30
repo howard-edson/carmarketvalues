@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cmv_app.models import Region, Search, Posting
+from cmv_app.models import Region, Search, Posting, BookMark
 #this is brand new
 from .models import Region, Search, Posting
 from django.contrib.auth.admin import UserAdmin
@@ -37,3 +37,4 @@ admin.site.register(get_user_model(), MyUserAdmin)
 admin.site.register(Region)
 admin.site.register(Search, SearchAdmin)
 admin.site.register(Posting, PostingAdmin)
+admin.site.register(BookMark)

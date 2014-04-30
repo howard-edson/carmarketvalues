@@ -22,40 +22,6 @@
 
 </style>
 <script>
-$(document).ready(function() {
-
-
-// ajax for bookmark 
-$('.bookmark').click(function() {
-     var id= $(this).attr('id');
-     data={
-          'id':id,
-          'csrfmiddlewaretoken':'{{ csrf_token }}',
-          };
-     var classie=$(this).children(":first").attr("class");
-      $.ajax({
-        url: '/post/bookmark/',
-        cache:'false',
-        dataType:'json',
-        type:'POST',
-        data:data,
-        success: function(data){
-          if (data['success']) {
-              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star');
-          }
-          else {
-              $("#"+id).children(":first").attr("class", 'glyphicon glyphicon-star-empty');
-          }
-        }, 
-        error: function(error){
-          alert('error; '+ eval(error));
-        }
-      });
-      return false;
-  });
- });
-//end for ajax bookmark
-
 </script>
  
 
@@ -69,17 +35,22 @@ $('.bookmark').click(function() {
       {% for bm in bookmarks %}
 
             <div class="col-6 col-sm-6 col-lg-4">
-              <h3>{{ bm.post.title }} </h3>
+               <form action="{% url 'unbookmark_post' %}" method="POST"> {% csrf_token %}
+                <h3>{{ bm.post.title }}
+                  <button type="submit" class="bookmark" id="{{ bm.post.pk }}" ><span class= "glyphicon glyphicon-star"></span></button>
+                  <input type="hidden" name="bookmark_id" value="{{ bm.post.pk }}" />
+              </form>
+            </h3>
               <p><small>{{ bm.post.body|lower|truncatewords:"20" }} </small></p>
               <p>
                 <a class="btn btn-default" href="{% url 'single_postings_detail' pk=bm.post.pk %}" role="button">View details &raquo;</a>
-                <button type="button" class="bookmark" id="{{ bm.post.pk }}" ><span class= "glyphicon glyphicon-star"></span></button>
+                
               </p>
 
             </div><!--/span-->
       {% endfor %}
       {% else %}
-          <p><h1>No posts to show</h1></p>
+          <p><h1>No bookmarks yet!</h1></p>
       {% endif %}
       </div> 
     </div>

@@ -26,42 +26,6 @@
                 }
 
             </style>
-
-            <script>
-$(document).ready(function() {
-// ajax for bookmark 
-$('.bookmark').click(function() {
-     var id= $(this).attr('id');
-     data={
-          'id':id,
-          'csrfmiddlewaretoken':'{{ csrf_token }}',
-          };
-     var classie=$(this).children(":first").attr("class");
-      $.ajax({
-        url: '/post/bookmark/',
-        cache:'false',
-        dataType:'json',
-        type:'POST',
-        data:data,
-        success: function(data){
-          if (data['success']) {
-              $('.bookmark').children(":first").attr("class", 'glyphicon glyphicon-star');
-          }
-          else {
-              $('.bookmark').children(":first").attr("class", 'glyphicon glyphicon-star-empty');
-          }
-        }, 
-        error: function(error){
-          alert('error; '+ eval(error));
-        }
-      });
-      return false;
-  });
- });
-//end for ajax bookmark
-
-</script>
-
 {% endblock %}
 
 {% block content %}
@@ -71,7 +35,7 @@ $('.bookmark').click(function() {
         <div class="col-xs-12 col-sm-9">
           <p class="pull-right visible-xs">
             <h3><center>{{ post.title }} 
-              <button type="button" class="bookmark" id="{{ post.pk }}" > 
+              <button type="button" class="btn bookmark" id="{{ post.pk }}" > 
                 <span class="{% if not bookmarks %}
                   glyphicon glyphicon-star-empty {% else %} glyphicon glyphicon-star {% endif %}"></span>
               </button>

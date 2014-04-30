@@ -87,6 +87,6 @@ class BookMark(models.Model):
     """
     A Bookmark is assigned to each posting a user chooses to keep a copy 
     """
-    
+    created=models.DateTimeField(auto_now=True,editable=False)
     user=models.ForeignKey(User)
     post=models.ForeignKey(Posting)

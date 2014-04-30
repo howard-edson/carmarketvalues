@@ -128,29 +128,42 @@ class SearchUpdateForm(SearchInputForm):
         
 
 class SortFieldsForm(forms.Form):
-    Latestyear=forms.BooleanField(label="latest year")
-    LowestPrice=forms.BooleanField(label="lowest price")
-    HighestPrice=forms.BooleanField(label="highest price")
-    Newest_Entry=forms.BooleanField(label="latest date")
+    latest_year=forms.BooleanField(label="latest year")
+    newest_entry=forms.BooleanField(label="latest date")
+    
+    #lowest_price=forms.BooleanField(label="lowest price")
+    #highest_price=forms.BooleanField(label="highest price")
+    
+    price_order=forms.ChoiceField(
+                    widget=forms.RadioSelect,
+                    label="price order",
+                    choices=(('lowest_price','lowest '),('highest_price','highest'),),
+                    initial="lowest_price",
+                    )
     
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_id = 'id-exampleForm'
         self.helper.form_class = 'form-inline'
+        self.helper.label_class='col-lg-2'
+        self.helper.field_class='col-lg-12'
         self.helper.form_method = 'post'
         self.helper.form_action = 'sort_posting'
 
         super(SortFieldsForm, self).__init__(*args, **kwargs)
         
         self.helper.layout = Layout(
-            PrependedText('LowestPrice', ''),
-            PrependedText('HighestPrice', ''),
+            'price_order',
+            'newest_entry',
+            'latest_year',
+            #PrependedText('LowestPrice', ''),
+            #PrependedText('HighestPrice', ''),
             #InlineCheckboxes('LowestPrice'),
-            PrependedText('Newest_Entry', ''),
-                PrependedText('Latestyear', ''),
-            ButtonHolder(
+            #PrependedText('Newest_Entry', ''),
+            #    PrependedText('Latestyear', ''),
+            #ButtonHolder(
                 Submit('submit', 'Submit', css_class='button white')
-            )
+            #)
         )
     
 

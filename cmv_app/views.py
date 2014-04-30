@@ -32,18 +32,6 @@ class SearchListView(ListView):
     def get_queryset(self):
         return Search.objects.filter(user=self.request.user.id)
     
-    
-
-class BookMarkListView(ListView):
-      
-    model=BookMark
-    template_name="cmv_app/bookmark_list.html"
-    context_object_name='bookmarks'
-      
-      
-    def get_queryset(self):
-        return BookMark.objects.filter(user=self.request.user.id)
-    
 
 class PostingsDetailView(DetailView):
     model=Posting
@@ -288,6 +276,25 @@ def bookmark_post(request):
     else:
         BookMark.delete(bookmark)
     return HttpResponse(simplejson.dumps(ret), content_type="application/json")
+
+
+class BookMarkListView(ListView):
+      
+    model=BookMark
+    template_name="cmv_app/bookmark_list.html"
+    context_object_name='bookmarks'
+      
+      
+    def get_queryset(self):
+        return BookMark.objects.filter(user=self.request.user.id).order_by('-created')
+    
+
+def unbookmark(request):
+    bm_id=request.POST.get("bookmark_id",None)
+    if bm_id:
+        bookmark = BookMark.objects.get(post__pk=bm_id)
+        BookMark.delete(bookmark)
+    return redirect('bookmark_listView')
 
     
     
