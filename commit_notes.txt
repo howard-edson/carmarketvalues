@@ -1,0 +1,17 @@
+run_searches.py
+--------------- 
+- removed some print statements no longer needed. refactored
+the logging to just provide summary stats for each run, in 'info' mode.
+
+- logging total execution time as well, so we can optimize when
+it becomes necessary.
+
+
+cmv_app/views.py
+----------------
+- updated search_report() function
+
+
+cmv_app/templates/cmv_app
+-------------------------
+- updated search_report.html

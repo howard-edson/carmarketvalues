@@ -1,39 +1,60 @@
 {% extends "base.html" %}
 {% load humanize %}  {% comment %} for formatting prices with a comma separator {% endcomment %}
+{% load bootstrap3 %}
+{% load static from staticfiles %}
+{% block title %}CMV: Search Report{% endblock %}
 
 {% block content %}
 
 <h2>Search report for {{ search }}</h2>
 
-{% if postings_count %}
+{% if total_count %}
 
-Postings saved: {{ postings_count }}
+Postings saved: {{ total_count }}
 
-<ul>
-	{% for r in x %}
-	    <li>
-	      <strong>{{ r.region__name }}</strong>
-	      <ul>
-	          <li>postings: {{ r.tcount }}</li>
-	          <li>average price: ${{ r.price|floatformat:"0" }}</li>
-	          <li>average year: {{ r.year|floatformat:"0" }}</li>
-	      </ul>
-	    </li>
-	{% endfor %}
-</ul>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+	  <table class="table table-bordered">
+		<thead>
+		  <tr>
+		    <th style="border-top: 1px solid white; border-left: 1px solid white;"></th>
+		    <th colspan="3">postings</th>
+		    <th colspan="2">vehicle year</th>
+		    <th colspan="2">vehicle price</th>
+		  </tr>
+		  <tr>
+		    <th>region</th>
+		    <th>count</th>
+		    <th>oldest</th>
+		    <th>newest</th>
+		    <th>mean</th>
+		    <th>range</th>
+		    <th>mean</th>
+		    <th>range</th>
+		</thead>
+		<tbody>
+		{% for row in rows %}
+		  <tr>
+		    <td>{{ row.region }}</td>
+		    <td>{{ row.postings_count }}</td>
+		    <td>{{ row.postings_oldest }}</td>
+		    <td>{{ row.postings_newest }}</td>
+		    <td>{{ row.year_avg }}</td>
+		    <td>{{ row.year_min }} - {{ row.year_max }}</td>
+		    <td>${{ row.price_avg|intcomma }}</td>
+		    <td>${{ row.price_min|intcomma }} - ${{ row.price_max|intcomma }}</td>
+		  </tr>
+		  {% endfor %}
+		</tbody>
+	  </table>
+	</div>
+  </div>
+</div>
 
-{% comment %}
-<ul>
-	<li></li>
-	<li>Average price: ${{ average_price|intcomma }}</li>
-	<li>Average year: {{ average_year }}</li>
-</ul>
-{% endcomment %}
 
 {% else %}
     <p>No Postings in the database for this search.</p>
 {% endif %}
-
-<hr />
 
 {% endblock content %}

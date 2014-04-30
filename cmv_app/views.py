@@ -6,7 +6,7 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.core.urlresolvers import reverse, reverse_lazy
 from cmv_app.models import Search, Posting, BookMark
 from cmv_app.forms import SearchForm, SortFieldsForm
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Max, Min
 from django.core.urlresolvers import reverse,reverse_lazy
 from cmv_app.models import Search, Region, Posting
 from cmv_app.forms import SearchForm, SearchInputForm, SearchCreateForm,\
@@ -171,20 +171,33 @@ class SearchDeleteView(DeleteView):
 
 
 def search_report(request, pk):
-    # display detail for a particular search
-    context = {}
+    # display a summary report for a search
+    rows = []
+    total_postings = 0
     search = get_object_or_404(Search, pk=pk)
-    context['search'] = search
-    postings = Posting.objects.filter(search=pk)
-    if postings.exists():
-        context['postings_count'] = len(postings)
-        context['x'] = postings.values('region__name').annotate(
-            year=Avg('vehicle_year'),
-            price=Avg('vehicle_price'),
-            tcount=Count('title'),
-        )
+    regions = search.regions.all()
+    for r in regions:
+        # build a row for the report (one row per region)
+        row = dict()
+        row['region'] = r
+        postings = Posting.objects.filter(search=pk, region=r)
+        count = len(postings)
+        total_postings += count
+        if postings.exists():
+            row['postings_count'] = count
+            row['postings_oldest'] = postings.aggregate(Min('last_updated'))['last_updated__min']
+            row['postings_newest'] = postings.aggregate(Max('last_updated'))['last_updated__max']            
+            row['year_avg'] = int(postings.aggregate(Avg('vehicle_year'))['vehicle_year__avg'])
+            row['year_min'] = postings.aggregate(Min('vehicle_year'))['vehicle_year__min']
+            row['year_max'] = postings.aggregate(Max('vehicle_year'))['vehicle_year__max']
+            row['price_avg'] = int(postings.aggregate(Avg('vehicle_price'))['vehicle_price__avg'])
+            row['price_min'] = postings.aggregate(Min('vehicle_price'))['vehicle_price__min']
+            row['price_max'] = postings.aggregate(Max('vehicle_price'))['vehicle_price__max']
+        rows.append(row)
+    context = {'search': search, 'rows': rows, 'total_count': total_postings}
     return render(request, 'cmv_app/search_report.html', context)
-    
+
+
 class SearchListJson(BaseDatatableView):
     model = Search
 

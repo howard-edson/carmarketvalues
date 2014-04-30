@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 # module: run_searches.py
 """
-This module is intended to be scheduled in a cron job to run nightly, but
-needs access to the django environment and models, so it can
-read Searches from the database, fetch new postings for each search,
-and insert them into the database. 
+This module is intended to be scheduled to run nightly (cron? celery?).
+It uses the django environment and models to read Searches from the 
+database, fetch new postings for each search, and insert them into 
+the database. Existing postings are updated, never duplicated. 
 
 """
 # make it possible to leverage our django models in this script
@@ -16,7 +16,6 @@ import feedparser
 import re
 import datetime
 import HTMLParser
-
 import logging
 logging.basicConfig(filename='run_searches.log',
                     format='%(asctime)s %(message)s',
@@ -117,31 +116,36 @@ class Entry(object):
 
 
 if __name__ == "__main__":
-
+    start_time = datetime.datetime.now()
     logging.info('Begin Processing')
+    searches_processed = 0
+    postings_updated = 0
+    new_postings = 0
+    craigslist_requests = 0
+    
     # process all searches from the database
     searches = Search.objects.all()
-    logging.info('Retrieved %s searches' % len(searches))
+    logging.debug('Searches retrieved: {}'.format(len(searches)))
     for search in searches:
-        print "inside loop"
-        logging.info('Search: %s' % search)
-        print search.regions.all()
+        searches_processed += 1
+        logging.debug('Search: %s' % search)
         for region in search.regions.all():
-            logging.info('region: %s' %region)
+            logging.debug('region: %s' %region)
             search_url = make_url(search, region)
             if search_url:
-                logging.info('URL: %s' % search_url)
+                logging.debug('URL: %s' % search_url)
             else:
-                logging.info('failed to build search_url')
+                logging.debug('failed to build search_url')
             postings = []  # a list of postings retrieved for this search_url
             doc = feedparser.parse(search_url)
+            craigslist_requests += 1
             if doc:
-                logging.info('Document retrieved from craigslist with %s entries' % len(doc['entries']))
+                logging.debug('Document retrieved from craigslist with %s entries' % len(doc['entries']))
             else:
-                logging.info('No document retrieved from craigslist')
+                logging.error('No document retrieved from craigslist')
             for entry in doc.entries:
                 e = Entry(entry)
-                logging.info(e)
+                logging.debug(e)
                 if not ('wanted' in e.title or 'wtb' in e.title):
                     try:
                         # see if posting exists already, and if so, update it
@@ -151,7 +155,8 @@ if __name__ == "__main__":
                         posting.title=e.title
                         posting.body=e.body
                         posting.save()
-                        logging.info('Posting found and updated')
+                        logging.debug('Posting found and updated')
+                        postings_updated += 1
                     except Posting.DoesNotExist:
                         posting = Posting(region=region,
                                           posting_url=e.posting_url,
@@ -160,11 +165,17 @@ if __name__ == "__main__":
                                           title=e.title,
                                           body=e.body)
                         posting.save()
-                        logging.info('New posting created')
+                        logging.debug('New posting created')
+                        new_postings += 1
                     finally:
                         posting.search.add(search)
-                        logging.info(Posting.objects.count())
                         for obj in Posting.objects.all():
-                            logging.info(obj)
+                            logging.debug(obj)
                     if not posting:
-                        logging.warning('Error: Posting not created')
+                        logging.error('Error: Posting not created')
+
+    logging.info('Searches processed: {}'.format(searches_processed))
+    logging.info('Postings updated: {}'.format(postings_updated))
+    logging.info('New postings added: {}'.format(new_postings))
+    logging.info('Craigslist requests submitted: {}'.format(craigslist_requests))
+    logging.info('Run time: {}'.format(datetime.datetime.now() - start_time))
