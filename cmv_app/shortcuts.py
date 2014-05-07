@@ -1,6 +1,7 @@
 from django.http import HttpResponseBadRequest
 from django.http.response import HttpResponse
 from django import forms
+from cmv_app import car_make_models
 
 def ajax_required(f):
     """
@@ -176,14 +177,17 @@ def populate_one_search(search):
                         logging.info(obj)
 
 
-MODELS_MAKE={
-             "toyota":['highlander','prius','carolla','rav4'],
-             "honda":['civic','crv','fit'],
-             "ford":['focus','escape','explorer']
-             }
+# MODELS_MAKE={
+#              "toyota":['highlander','prius','carolla','rav4'],
+#              "honda":['civic','crv','fit'],
+#              "ford":['focus','escape','explorer']
+#              }
+
+MODELS_MAKE=car_make_models.MODELS_MAKE
 
 MAKES=(("NA","------"),)
-MAKES+=tuple((make,make) for make in ("toyota","honda","ford"))
+#MAKES+=tuple((make,make) for make in ("toyota","honda","ford"))
+MAKES+=tuple((make,make) for make in MODELS_MAKE)
 
 regions = (
     'atlanta',

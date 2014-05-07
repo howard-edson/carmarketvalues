@@ -6,4 +6,5 @@ notes.txt
 secrets.json
 commit_message.txt
 cmv_project/live/
-single_search.log
+*.log
+cmv_project/settings.py

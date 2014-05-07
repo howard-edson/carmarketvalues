@@ -71,6 +71,48 @@ margin-right:-10px;}
           |
           <a href="{% url 'search_report' pk=search_pk %}">Report</a>
         </center>
+
+      <!--   <form id="id-exampleForm" class="form-inline" method="post">
+            <input type='hidden' name='csrfmiddlewaretoken' value='1bfhNFINdeJVpSNBBQd0X7zLWLVwm1bB' />
+            <div class="col-sm-12" >
+                <div class="col-sm-2">
+                    <label for="id_price_order_0" class="control-label  requiredField">
+                        price order
+                        <span class="asteriskField">*</span>
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="radio" for="id_price_order_1">
+                        lowest
+                        <input type="radio" checked="checked" name="price_order" id="id_price_order_1" value="lowest_price" />
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="radio" for="id_price_order_2">
+                        highest
+                        <input type="radio" name="price_order" id="id_price_order_2" value="highest_price" />
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label for="id_newest_entry" class="requiredField checkbox">
+                        latest date
+                        <input id="id_newest_entry" name="newest_entry" type="checkbox" />
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label for="id_latest_year" class="requiredField checkbox">
+                        latest year
+                        <input  id="id_latest_year" name="latest_year" type="checkbox" />
+                    </label>
+                </div>
+                <div class="col-sm-2 text-center">
+                <input type="submit" name="submit" value="Submit" class="btn btn-primary button white" id="submit-id-submit" />
+            </div>
+            </div>
+            
+    
+        </form> -->
+
         {% crispy form %}
       </div>
 

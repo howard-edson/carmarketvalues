@@ -128,44 +128,101 @@ class SearchUpdateForm(SearchInputForm):
         
 
 class SortFieldsForm(forms.Form):
-    latest_year=forms.BooleanField(label="latest year")
-    newest_entry=forms.BooleanField(label="latest date")
-    
-    #lowest_price=forms.BooleanField(label="lowest price")
-    #highest_price=forms.BooleanField(label="highest price")
-    
-    price_order=forms.ChoiceField(
-                    widget=forms.RadioSelect,
-                    label="price order",
-                    choices=(('lowest_price','lowest '),('highest_price','highest'),),
-                    initial="lowest_price",
-                    )
-    
-    def __init__(self, *args, **kwargs):
-        self.helper = FormHelper()
-        self.helper.form_id = 'id-exampleForm'
-        self.helper.form_class = 'form-inline'
-        self.helper.label_class='col-lg-2'
-        self.helper.field_class='col-lg-12'
-        self.helper.form_method = 'post'
-        self.helper.form_action = 'sort_posting'
-
-        super(SortFieldsForm, self).__init__(*args, **kwargs)
-        
-        self.helper.layout = Layout(
-            'price_order',
-            'newest_entry',
-            'latest_year',
-            #PrependedText('LowestPrice', ''),
-            #PrependedText('HighestPrice', ''),
-            #InlineCheckboxes('LowestPrice'),
-            #PrependedText('Newest_Entry', ''),
-            #    PrependedText('Latestyear', ''),
-            #ButtonHolder(
-                Submit('submit', 'Submit', css_class='button white')
-            #)
-        )
-    
+#     latest_year=forms.BooleanField(label="latest year")
+#     newest_entry=forms.BooleanField(label="newest post")
+#     
+#     #lowest_price=forms.BooleanField(label="lowest price")
+#     #highest_price=forms.BooleanField(label="highest price")
+#     
+#     price_order=forms.ChoiceField(
+#                     widget=forms.RadioSelect,
+#                     label="price order",
+#                     choices=(('lowest_price','lowest '),('highest_price','highest'),),
+#                     initial="lowest_price",
+#                     )
+#     
+#     def __init__(self, *args, **kwargs):
+#         self.helper = FormHelper()
+#         self.helper.form_id = 'id-exampleForm'
+#         self.helper.form_class = 'form-inline'
+#         #self.helper.field_template='bootstrap3/layout/inline_field.html'
+#         #self.helper.label_class='col-lg-2'
+#         #self.helper.field_class='col-lg-12 form-control'
+#         self.helper.form_method = 'post'
+#         self.helper.form_action = 'sort_posting'
+# 
+#         super(SortFieldsForm, self).__init__(*args, **kwargs)
+#         
+#         self.helper.layout = Layout(
+#            Div(
+#             InlineRadios('price_order'),
+#             ),
+#             'newest_entry',
+#             'latest_year',
+#             #PrependedText('LowestPrice', ''),
+#             #PrependedText('HighestPrice', ''),
+#             #InlineCheckboxes('LowestPrice'),
+#             #PrependedText('Newest_Entry', ''),
+#             #    PrependedText('Latestyear', ''),
+#             #ButtonHolder(
+#                 Submit('submit', 'Submit', css_id="submit_sortform", css_class='button white')
+#             #)
+#         )
+#     
+    text_input = forms.CharField()
+    textarea = forms.CharField(
+    widget = forms.Textarea(),
+    )
+     
+    radio_buttons = forms.ChoiceField(
+    choices = (
+    ('option_one', "Option one is this and that be sure to include why it's great"),
+    ('option_two', "Option two can is something else and selecting it will deselect option one")
+    ),
+    widget = forms.RadioSelect,
+    initial = 'option_two',
+    )
+     
+    checkboxes = forms.MultipleChoiceField(
+    choices = (
+    ('option_one', "Option one is this and that be sure to include why it's great"),
+    ('option_two', 'Option two can also be checked and included in form results'),
+    ('option_three', 'Option three can yes, you guessed it also be checked and included in form results')
+    ),
+    initial = 'option_one',
+    widget = forms.CheckboxSelectMultiple,
+    help_text = "<strong>Note:</strong> Labels surround all the options for much larger click areas and a more usable form.",
+    )
+     
+    appended_text = forms.CharField(
+    help_text = "Here's more help text"
+    )
+     
+    prepended_text = forms.CharField()
+     
+    prepended_text_two = forms.CharField()
+     
+    multicolon_select = forms.MultipleChoiceField(
+    choices = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')),
+    )
+     
+    # Uni-form
+    helper = FormHelper()
+    helper.form_class = 'form-horizontal'
+    helper.layout = Layout(
+    Field('text_input', css_class='input-xlarge'),
+    Field('textarea', rows="3", css_class='input-xlarge'),
+    'radio_buttons',
+    Field('checkboxes', style="background: #FAFAFA; padding: 10px;"),
+    AppendedText('appended_text', '.00'),
+    PrependedText('prepended_text', '<input type="checkbox" checked="checked" value="" id="" name="">', active=True),
+    PrependedText('prepended_text_two', '@'),
+    'multicolon_select',
+    FormActions(
+    Submit('save_changes', 'Save changes', css_class="btn-primary"),
+    Submit('cancel', 'Cancel'),
+    )
+    )
 
 
         

@@ -159,6 +159,18 @@ float: left;
 margin: -2px 3px 0 0;
 }
 
+#div_id_newest_entry,
+#div_id_latest_year,
+#submit_sortform {
+  margin-top:25px;
+  margin:25px 10px 0px;
+
+}
+
+#id-exampleForm {
+  padding: 20px 10px 5px 5px;
+}
+
 
 
 
