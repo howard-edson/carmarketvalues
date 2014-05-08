@@ -127,6 +127,7 @@ class SearchUpdateForm(SearchInputForm):
                             Field('model', type='hidden'),)
         
 
+#this needs fix
 class SortFieldsForm(forms.Form):
     latest_year=forms.BooleanField(label="latest year")
     newest_entry=forms.BooleanField(label="newest post")
