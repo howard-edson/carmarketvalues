@@ -6,7 +6,7 @@ from django.views.generic.edit import UpdateView, CreateView, DeleteView
 from django.core.urlresolvers import reverse, reverse_lazy
 from cmv_app.models import Search, Posting, BookMark
 from cmv_app.forms import SearchForm, SortFieldsForm
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Max, Min
 from django.core.urlresolvers import reverse,reverse_lazy
 from cmv_app.models import Search, Region, Posting
 from cmv_app.forms import SearchForm, SearchInputForm, SearchCreateForm,\
@@ -185,7 +185,8 @@ def search_report(request, pk):
         rows.append(row)
     context = {'search': search, 'rows': rows, 'total_count': total_postings}
     return render(request, 'cmv_app/search_report.html', context)
-    
+
+
 class SearchListJson(BaseDatatableView):
     model = Search
 
